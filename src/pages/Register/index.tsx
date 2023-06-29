@@ -10,7 +10,7 @@ import Input from "@mui/joy/Input";
 import Button from "@mui/joy/Button";
 import Link from "@mui/joy/Link";
 import Divider from "@mui/joy/Divider";
-import '../../styles/googleSignIn.css'
+import '../../../styles/googleSignIn.css'
 
 export default function App() {
   return (
