@@ -1,73 +1,62 @@
 "use client";
 import "@fontsource/public-sans";
 import * as React from "react";
-import { CssVarsProvider, StyledEngineProvider } from "@mui/joy/styles";
-import Sheet from "@mui/joy/Sheet";
-import Typography from "@mui/joy/Typography";
-import FormControl from "@mui/joy/FormControl";
-import FormLabel from "@mui/joy/FormLabel";
-import Input from "@mui/joy/Input";
-import Button from "@mui/joy/Button";
-import Link from "@mui/joy/Link";
-import Divider from "@mui/joy/Divider";
-import '../../styles/googleSignIn.css'
+import "../../styles/googleSignIn.css";
 import Navbar from "../components/Navbar";
+import Lottie from "lottie-react";
+import HeroSection from "../../public/HeroSection.json";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import Link from "@mui/joy/Link";
+import Button from "@mui/joy/Button";
 
 export default function App() {
   return (
-    <CssVarsProvider>
+    <div>
       <Navbar />
-      <Sheet
-        variant="plain"
-        sx={{
-          maxWidth: 450,
-          mx: "auto",
-          my: 4,
-          py: 3,
-          px: 2,
+      <div
+        style={{
           display: "flex",
-          flexDirection: "column",
-          gap: 2,
+          justifyContent: "space-around",
+          paddingTop: 50,
         }}>
         <div>
-          <Typography level="h2" component="h1" textAlign="center">
-            Home
-          </Typography>
-          <Typography textColor="gray" level="body1" textAlign="center">Get Started - it&apos;s free. No credit card required</Typography>
+          <h1
+            style={{
+              fontSize: "4.5rem",
+              lineHeight: "85px",
+              color: "rgb(51, 51, 51)",
+              paddingBottom: "12px",
+              textAlign: "left",
+            }}>
+            <span style={{ fontWeight: "600" }}>
+              Get Alerts when Items
+              <br />
+              Get Cheaper
+              <br />
+              <Link href="/Register">
+                <Button
+                  className="group"
+                  style={{ borderRadius: 100 }}
+                  endDecorator={
+                    <ArrowForwardIcon
+                      // @ts-ignore
+                      fontSize="md"
+                      className="transform translate-x-0 transition-transform duration-300 group-hover:translate-x-1"
+                    />
+                  }>
+                  Get Started
+                </Button>
+              </Link>
+              <Link href="/Login" p={3} textColor="common.black">
+                Login
+              </Link>
+            </span>
+          </h1>
         </div>
-
-        <FormControl>
-          <FormLabel>Email</FormLabel>
-          <Input
-            name="email"
-            type="email"
-            placeholder="johndoe@email.com"
-          />
-        </FormControl>
-        <FormControl>
-          <FormLabel>Password</FormLabel>
-          <Input name="password" type="password" placeholder="password" />
-        </FormControl>
-
-        <Divider>
-          or
-        </Divider>
-
-        <button className="login-with-google-btn" onClick={()=>{}}>
-          Sign up with Google
-        </button>
-
-        <Button onClick={function (){}} style={{marginTop: 20}} variant="solid">
-          Continue
-        </Button>
-
-        <Typography
-          endDecorator={<Link href="/Login">Sign in</Link>}
-          fontSize="sm"
-          sx={{ alignSelf: "center" }}>
-          Already have an account?
-        </Typography>
-      </Sheet>
-    </CssVarsProvider>
+        <div className="w-1/2 hidden lg:flex sm:w-1/4">
+          <Lottie loop={1} autoPlay={false} animationData={HeroSection} />
+        </div>
+      </div>
+    </div>
   );
 }
