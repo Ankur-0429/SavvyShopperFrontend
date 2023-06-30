@@ -16,6 +16,12 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", scrollHandler);
   }, [top]);
 
+  const [hovered, setHovered] = useState(false);
+
+  const handleHover = () => {
+    setHovered(!hovered);
+  };
+
   return (
     <div>
       <div
@@ -29,22 +35,28 @@ const Navbar = () => {
           </Link>
           <ul className="hidden list-none p-0 items-center sm:flex">
             <li className="p-3">
-              <Link href="/Login" textColor="common.black">
+              <Link href="/Login" textColor="text.secondary">
                 Login
               </Link>
             </li>
 
             <li className="p-3">
-              <Link href="/Register">
+              <Link href="/Register" underline="none">
                 <Button
-                  className="group"
+                  onMouseEnter={handleHover}
+                  onMouseLeave={handleHover}
                   style={{ borderRadius: 100 }}
                   endDecorator={
-                    <ArrowForwardIcon
-                      // @ts-ignore
-                      fontSize="md"
-                      className="transform translate-x-0 transition-transform duration-300 group-hover:translate-x-1"
-                    />
+                    <div style={{
+                        position: 'relative',
+                        left: hovered ? '5px' : '0',
+                        transition: 'left 0.3s ease-in-out',
+                    }}>
+                        <ArrowForwardIcon
+                            // @ts-ignore
+                            fontSize="md"
+                        />
+                    </div>
                   }>
                   Get Started
                 </Button>

@@ -8,8 +8,15 @@ import HeroSection from "../../public/HeroSection.json";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Link from "@mui/joy/Link";
 import Button from "@mui/joy/Button";
+import { useState } from "react";
 
 export default function App() {
+  const [hovered, setHovered] = useState(false);
+
+  const handleHover = () => {
+    setHovered(!hovered);
+  };
+
   return (
     <div>
       <Navbar />
@@ -33,21 +40,30 @@ export default function App() {
               <br />
               Get Cheaper
               <br />
-              <Link href="/Register">
+              <Link href="/Register" underline="none">
                 <Button
                   className="group"
+                  size="lg"
                   style={{ borderRadius: 100 }}
+                  onMouseEnter={handleHover}
+                  onMouseLeave={handleHover}
                   endDecorator={
-                    <ArrowForwardIcon
-                      // @ts-ignore
-                      fontSize="md"
-                      className="transform translate-x-0 transition-transform duration-300 group-hover:translate-x-1"
-                    />
+                    <div
+                      style={{
+                        position: "relative",
+                        left: hovered ? "5px" : "0",
+                        transition: "left 0.3s ease-in-out",
+                      }}>
+                      <ArrowForwardIcon
+                        // @ts-ignore
+                        fontSize="md"
+                      />
+                    </div>
                   }>
                   Get Started
                 </Button>
               </Link>
-              <Link href="/Login" p={3} textColor="common.black">
+              <Link href="/Login" p={3} textColor="text.secondary">
                 Login
               </Link>
             </span>
