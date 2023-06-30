@@ -2,6 +2,8 @@ import Button from "@mui/joy/Button";
 import Link from "@mui/joy/Link";
 import React, { useEffect, useState } from "react";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import Image from "next/image";
+import Logo from "../../../public/SavvyShopper_Logo.png";
 
 const Navbar = () => {
   const [top, setTop] = useState(true);
@@ -16,12 +18,15 @@ const Navbar = () => {
 
   return (
     <div>
-      <div className={`fixed left-0 top-0 w-full ease-in duration-100 z-10 ${!top && `bg-white shadow-lg`}`}>
+      <div
+        className={`fixed left-0 top-0 w-full ease-in duration-100 z-10 ${
+          !top && `bg-white shadow-lg`
+        }`}>
         <div className="max-w-[1240px] px-5 mx-auto flex justify-between items-center">
           <Link href="/" underline="none">
+            <Image src={Logo} alt="Company Logo" width={50} height={60} />
             <h1 className="font-bold text-2xl">SaavyShopper</h1>
           </Link>
-
           <ul className="hidden list-none p-0 items-center sm:flex">
             <li className="p-3">
               <Link href="/Login" textColor="common.black">
