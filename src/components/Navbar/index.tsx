@@ -47,15 +47,16 @@ const Navbar = () => {
                   onMouseLeave={handleHover}
                   style={{ borderRadius: 100 }}
                   endDecorator={
-                    <div style={{
-                        position: 'relative',
-                        left: hovered ? '5px' : '0',
-                        transition: 'left 0.3s ease-in-out',
-                    }}>
-                        <ArrowForwardIcon
-                            // @ts-ignore
-                            fontSize="md"
-                        />
+                    <div
+                      style={{
+                        position: "relative",
+                        left: hovered ? "5px" : "0",
+                        transition: "left 0.3s ease-in-out",
+                      }}>
+                      <ArrowForwardIcon
+                        // @ts-ignore
+                        fontSize="md"
+                      />
                     </div>
                   }>
                   Get Started
@@ -67,16 +68,24 @@ const Navbar = () => {
           <div className="block sm:hidden z-10">
             <ul className="list-none p-0 items-center">
               <li className="p-3">
-                <Link href="/Register">
+                <Link href="/Register" underline="none">
                   <Button
                     className="group"
+                    onMouseEnter={handleHover}
+                    onMouseLeave={handleHover}
                     style={{ borderRadius: 100 }}
                     endDecorator={
-                      <ArrowForwardIcon
-                        // @ts-ignore
-                        fontSize="md"
-                        className="transform translate-x-0 transition-transform duration-300 group-hover:translate-x-1"
-                      />
+                      <div
+                        style={{
+                          position: "relative",
+                          left: hovered ? "5px" : "0",
+                          transition: "left 0.3s ease-in-out",
+                        }}>
+                        <ArrowForwardIcon
+                          // @ts-ignore
+                          fontSize="md"
+                        />
+                      </div>
                     }>
                     Get Started
                   </Button>
