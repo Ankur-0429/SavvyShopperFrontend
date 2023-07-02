@@ -56,10 +56,7 @@ export default function App() {
         </Divider>
 
         <button className="login-with-google-btn" onClick={async () => {
-          auth?.loginWithGoogle().then(() => {
-            console.log(auth.user);
-            console.log(auth.error);
-          });
+          auth?.loginWithGoogle();
         }}>
           Sign up with Google
         </button>
