@@ -61,6 +61,8 @@ export default function App() {
           Sign up with Google
         </button>
 
+        <p>{auth?.user?.user.email}</p>
+
         <Button onClick={function (){}} style={{marginTop: 20}} variant="solid">
           Continue
         </Button>
