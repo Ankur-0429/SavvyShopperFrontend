@@ -1,5 +1,5 @@
 import { AuthService } from "@/service/AuthService";
-import { UserCredential, signOut } from "firebase/auth";
+import { User, UserCredential, signOut } from "firebase/auth";
 import { createContext, useContext, useState } from "react";
 import { auth } from "../../firebase/clientApp";
 
@@ -10,11 +10,11 @@ export default function useAuth() {
 }
 
 export function AuthProvider(props: any) {
-    const [user, setUser] = useState(undefined as UserCredential | undefined);
+    const [user, setUser] = useState(undefined as User | undefined);
     const [error, setError] = useState(undefined as string | undefined);
 
     const loginWithGoogle = async () => {
-        const {user, error} : {user?: UserCredential, error ?:string} = await AuthService.loginWithGoogle();
+        const {user, error} : {user?: User, error ?:string} = await AuthService.loginWithGoogle();
         setUser(user);
         setError(error);
     };
