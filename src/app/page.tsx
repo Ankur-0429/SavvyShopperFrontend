@@ -8,7 +8,7 @@ import HeroSection from "../../public/HeroSection.json";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Link from "@mui/joy/Link";
 import Button from "@mui/joy/Button";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function App() {
   const [hovered, setHovered] = useState(false);

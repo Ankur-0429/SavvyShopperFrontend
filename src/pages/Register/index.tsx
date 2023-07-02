@@ -11,12 +11,12 @@ import Button from "@mui/joy/Button";
 import Link from "@mui/joy/Link";
 import Divider from "@mui/joy/Divider";
 import '../../../styles/googleSignIn.css'
-import useAuth from "@/hook/Auth";
+import useAuth, { AuthType } from "@/hook/Auth";
+import { withPublic } from "@/hook/Routes";
 
 
-export default function App() {
+function App({ auth }: {auth: AuthType}) {
 
-  const auth = useAuth();
   return (
     <CssVarsProvider>
       <Sheet
@@ -74,3 +74,5 @@ export default function App() {
     </CssVarsProvider>
   );
 }
+
+export default withPublic(App);

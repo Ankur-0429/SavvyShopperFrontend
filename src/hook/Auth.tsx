@@ -1,30 +1,47 @@
 import { AuthService } from "@/service/AuthService";
 import { User, UserCredential, signOut } from "firebase/auth";
-import { createContext, useContext, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useContext,
+  useState,
+} from "react";
 import { auth } from "../../firebase/clientApp";
 
-const AuthContext = createContext(undefined as { user: UserCredential | undefined; error: string | undefined; loginWithGoogle: () => Promise<void>; logout: () => Promise<void>; } | undefined);
+export type AuthType = {
+    user: User | undefined;
+    error: string | undefined;
+    loginWithGoogle: () => Promise<void>;
+    logout: () => Promise<void>;
+    setUser: Dispatch<SetStateAction<User | undefined>>;
+  } | undefined;
+
+const AuthContext = createContext(
+  undefined as AuthType
+);
 
 export default function useAuth() {
-    return useContext(AuthContext);
+  return useContext(AuthContext);
 }
 
 export function AuthProvider(props: any) {
-    const [user, setUser] = useState(undefined as User | undefined);
-    const [error, setError] = useState(undefined as string | undefined);
+  const [user, setUser] = useState(undefined as User | undefined);
+  const [error, setError] = useState(undefined as string | undefined);
 
-    const loginWithGoogle = async () => {
-        const {user, error} : {user?: User, error ?:string} = await AuthService.loginWithGoogle();
-        setUser(user);
-        setError(error);
-    };
+  const loginWithGoogle = async () => {
+    const { user, error }: { user?: User; error?: string } =
+      await AuthService.loginWithGoogle();
+    setUser(user);
+    setError(error);
+  };
 
-    const logout = async() => {
-        await signOut(auth);
-        setUser(undefined);
-        setError(undefined);
-    }
-    const value = {user, error, loginWithGoogle, logout};
+  const logout = async () => {
+    await signOut(auth);
+    setUser(undefined);
+    setError(undefined);
+  };
+  const value = { user, error, loginWithGoogle, logout, setUser };
 
-    return <AuthContext.Provider value={value} {...props} />
+  return <AuthContext.Provider value={value} {...props} />;
 }
