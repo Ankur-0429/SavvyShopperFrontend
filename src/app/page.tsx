@@ -8,7 +8,7 @@ import HeroSection from "../../public/HeroSection.json";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Link from "@mui/joy/Link";
 import Button from "@mui/joy/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function App() {
   const [hovered, setHovered] = useState(false);
@@ -69,8 +69,8 @@ export default function App() {
             </span>
           </h1>
         </div>
-        <div className="w-1/2 hidden lg:flex sm:w-1/4">
-          <Lottie loop={1} autoPlay={false} animationData={HeroSection} />
+        <div className="hidden lg:flex sm:w-1/4">
+          <Lottie autoplay={false} animationData={HeroSection} />
         </div>
       </div>
     </div>

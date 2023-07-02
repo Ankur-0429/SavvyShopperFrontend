@@ -11,8 +11,12 @@ import Button from "@mui/joy/Button";
 import Link from "@mui/joy/Link";
 import Divider from "@mui/joy/Divider";
 import '../../../styles/googleSignIn.css'
+import useAuth from "@/hook/Auth";
+
 
 export default function App() {
+
+  const auth = useAuth();
   return (
     <CssVarsProvider>
       <Sheet
@@ -51,7 +55,9 @@ export default function App() {
           or
         </Divider>
 
-        <button className="login-with-google-btn" onClick={()=>{}}>
+        <button className="login-with-google-btn" onClick={async () => {
+          auth?.loginWithGoogle();
+        }}>
           Sign up with Google
         </button>
 
