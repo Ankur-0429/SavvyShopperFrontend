@@ -44,7 +44,7 @@ export default function App() {
                 <Button
                   className="group"
                   size="lg"
-                  style={{ borderRadius: 100 }}
+                  style={{ borderRadius: 100, fontWeight: 300 }}
                   onMouseEnter={handleHover}
                   onMouseLeave={handleHover}
                   endDecorator={
@@ -63,7 +63,7 @@ export default function App() {
                   Get Started
                 </Button>
               </Link>
-              <Link href="/Login" p={3} textColor="text.secondary">
+              <Link href="/Login" p={3} textColor="text.secondary" fontWeight={300}>
                 Login
               </Link>
             </span>

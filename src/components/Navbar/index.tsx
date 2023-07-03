@@ -35,7 +35,7 @@ const Navbar = () => {
           </Link>
           <ul className="hidden list-none p-0 items-center sm:flex">
             <li className="p-3">
-              <Link href="/Login" textColor="text.secondary">
+              <Link href="/Login" textColor="text.secondary" fontWeight={300}>
                 Login
               </Link>
             </li>
@@ -45,7 +45,7 @@ const Navbar = () => {
                 <Button
                   onMouseEnter={handleHover}
                   onMouseLeave={handleHover}
-                  style={{ borderRadius: 100 }}
+                  style={{ borderRadius: 100, fontWeight: 300 }}
                   endDecorator={
                     <div
                       style={{
@@ -73,7 +73,7 @@ const Navbar = () => {
                     className="group"
                     onMouseEnter={handleHover}
                     onMouseLeave={handleHover}
-                    style={{ borderRadius: 100 }}
+                    style={{ borderRadius: 100, fontWeight: 300 }}
                     endDecorator={
                       <div
                         style={{
