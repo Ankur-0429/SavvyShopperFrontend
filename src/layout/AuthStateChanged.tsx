@@ -10,7 +10,7 @@ export default function AuthStateChanged({children}: { children: ReactNode }) {
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
-            authorization?.setUser(user || undefined);
+            // authorization?.setUser(user || undefined);
             setLoading(false);
         });
     // eslint-disable-next-line react-hooks/exhaustive-deps

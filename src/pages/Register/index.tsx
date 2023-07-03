@@ -11,11 +11,60 @@ import Button from "@mui/joy/Button";
 import Link from "@mui/joy/Link";
 import Divider from "@mui/joy/Divider";
 import '../../../styles/googleSignIn.css'
-import useAuth, { AuthType } from "@/hook/Auth";
+import { AuthType } from "@/hook/Auth";
 import { withPublic } from "@/hook/Routes";
+import { useEffect, useState } from "react";
+import { FormHelperText } from "@mui/joy";
 
 
 function App({ auth }: {auth: AuthType}) {
+
+  const [email, setEmail] = useState('');
+  const [emailErr, setEmailErr] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordErr, setPasswordErr] = useState('');
+
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmailErr('');
+    setEmail(event.target.value);
+  };
+
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPasswordErr('');
+    setPassword(event.target.value);
+  };
+
+  const checkError = () => {
+    const err = auth?.error;
+    console.log(err);
+
+    if (err === undefined) return;
+
+    if (err.includes('(auth/invalid-email)')) {
+      setEmailErr('Invalid Email');
+    }
+
+    if (err.includes('auth/email-already-in-use')) {
+      setEmailErr('Email Already In Use');
+    }
+
+    if (err.includes('auth/weak-password')) {
+      setPasswordErr('Password should be at least 8 characters');
+    }
+
+    if (err.includes('auth/network-request-failed')) {
+      setEmailErr('Network Connection Error. Please Try again later.')
+    }
+
+    if (err.includes('auth/too-many-requests')) {
+      setEmailErr('Too many requests');
+    }
+  }
+
+  useEffect(() => {
+    checkError();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth?.error])
 
   return (
     <CssVarsProvider>
@@ -38,17 +87,26 @@ function App({ auth }: {auth: AuthType}) {
           <Typography textColor="gray" level="body1" textAlign="center">Get Started - it&apos;s free. No credit card required</Typography>
         </div>
 
-        <FormControl>
+        <FormControl required>
           <FormLabel>Email</FormLabel>
           <Input
             name="email"
             type="email"
             placeholder="johndoe@email.com"
+            value={email}
+            error={emailErr!==''}
+            onChange={handleEmailChange}
           />
+          <FormHelperText>
+            {emailErr !== '' && emailErr}
+          </FormHelperText>
         </FormControl>
-        <FormControl>
+        <FormControl required>
           <FormLabel>Password</FormLabel>
-          <Input name="password" type="password" placeholder="password" />
+          <Input name="password" type="password" placeholder="password" value={password} onChange={handlePasswordChange} error={passwordErr!==''} />
+          <FormHelperText>
+            {passwordErr !== '' && passwordErr}
+          </FormHelperText>
         </FormControl>
 
         <Divider>
@@ -61,7 +119,9 @@ function App({ auth }: {auth: AuthType}) {
           Sign up with Google
         </button>
 
-        <Button onClick={function (){}} style={{marginTop: 20}} variant="solid">
+        <Button onClick={async () => {
+          await auth?.registerWithEmailAndPassword(email, password).then(() => {checkError()});
+        }} style={{marginTop: 20}} variant="solid">
           Continue
         </Button>
         <Typography

@@ -15,6 +15,8 @@ export type AuthType = {
     loginWithGoogle: () => Promise<void>;
     logout: () => Promise<void>;
     setUser: Dispatch<SetStateAction<User | undefined>>;
+    loginWithEmailAndPassword: (email: string, password: string) => Promise<void>;
+    registerWithEmailAndPassword: (email: string, password: string) => Promise<void>;
   } | undefined;
 
 const AuthContext = createContext(
@@ -36,12 +38,26 @@ export function AuthProvider(props: any) {
     setError(error);
   };
 
+  const loginWithEmailAndPassword = async (email: string, password: string) => {
+    const { user, error }: { user?: User; error?: string } =
+      await AuthService.loginUserFromEmailAndPassword(email, password);
+    setUser(user);
+    setError(error);
+  };
+
+  const registerWithEmailAndPassword = async (email: string, password: string) => {
+    const { user, error }: { user?: User; error?: string } =
+      await AuthService.registerUserFromEmailAndPassword(email, password);
+    setUser(user);
+    setError(error);
+  };
+
   const logout = async () => {
     await signOut(auth);
     setUser(undefined);
     setError(undefined);
   };
-  const value = { user, error, loginWithGoogle, logout, setUser };
+  const value = { user, error, loginWithGoogle, logout, setUser, loginWithEmailAndPassword, registerWithEmailAndPassword };
 
   return <AuthContext.Provider value={value} {...props} />;
 }
