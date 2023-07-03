@@ -13,7 +13,7 @@ export function withPublic(Component: React.ComponentType<ComponentProps>) {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const router = useRouter();
         if (auth?.user) {
-            router.replace('/');
+            router.replace('/Dashboard');
             return null;
         }
         return <Component auth={auth} {...props} />;
