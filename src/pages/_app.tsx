@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app';
 import { AuthProvider } from '@/hook/Auth';
 import AuthStateChanged from '@/layout/AuthStateChanged';
+import '../app/globals.css'
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
 

@@ -4,9 +4,12 @@ import React, { useEffect, useState } from "react";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Image from "next/image";
 import Logo from "../../../public/SavvyShopper_Logo.png";
+import useAuth from "@/hook/Auth";
+import AvatarMenuDrop from "../AvatarMenuDrop";
 
 const Navbar = () => {
   const [top, setTop] = useState(true);
+  const auth = useAuth();
 
   useEffect(() => {
     const scrollHandler = () => {
@@ -34,62 +37,75 @@ const Navbar = () => {
             <h1 className="font-bold text-2xl">SaavyShopper</h1>
           </Link>
           <ul className="hidden list-none p-0 items-center sm:flex">
-            <li className="p-3">
-              <Link href="/Login" textColor="text.secondary" fontWeight={300}>
-                Login
-              </Link>
-            </li>
+            {auth?.user ? (
+              <AvatarMenuDrop />
+            ) : (
+              <div className="flex items-center">
+                <li className="p-3">
+                  <Link
+                    href="/Login"
+                    textColor="text.secondary"
+                    fontWeight={300}>
+                    Login
+                  </Link>
+                </li>
 
-            <li className="p-3">
-              <Link href="/Register" underline="none">
-                <Button
-                  onMouseEnter={handleHover}
-                  onMouseLeave={handleHover}
-                  style={{ borderRadius: 100, fontWeight: 300 }}
-                  endDecorator={
-                    <div
-                      style={{
-                        position: "relative",
-                        left: hovered ? "5px" : "0",
-                        transition: "left 0.3s ease-in-out",
-                      }}>
-                      <ArrowForwardIcon
-                        // @ts-ignore
-                        fontSize="md"
-                      />
-                    </div>
-                  }>
-                  Get Started
-                </Button>
-              </Link>
-            </li>
+                <li className="p-3">
+                  <Link href="/Register" underline="none">
+                    <Button
+                      onMouseEnter={handleHover}
+                      onMouseLeave={handleHover}
+                      style={{ borderRadius: 100, fontWeight: 300 }}
+                      endDecorator={
+                        <div
+                          style={{
+                            position: "relative",
+                            left: hovered ? "5px" : "0",
+                            transition: "left 0.3s ease-in-out",
+                          }}>
+                          <ArrowForwardIcon
+                            // @ts-ignore
+                            fontSize="md"
+                          />
+                        </div>
+                      }>
+                      Get Started
+                    </Button>
+                  </Link>
+                </li>
+              </div>
+            )}
           </ul>
 
           <div className="block sm:hidden z-10">
             <ul className="list-none p-0 items-center">
               <li className="p-3">
-                <Link href="/Register" underline="none">
-                  <Button
-                    className="group"
-                    onMouseEnter={handleHover}
-                    onMouseLeave={handleHover}
-                    style={{ borderRadius: 100, fontWeight: 300 }}
-                    endDecorator={
-                      <div
-                        style={{
-                          position: "relative",
-                          left: hovered ? "5px" : "0",
-                          transition: "left 0.3s ease-in-out",
-                        }}>
-                        <ArrowForwardIcon
-                          // @ts-ignore
-                          fontSize="md"
-                        />
-                      </div>
-                    }>
-                    Get Started
-                  </Button>
-                </Link>
+                {auth?.user ? (
+                  <AvatarMenuDrop />
+                ) : (
+                  <Link href="/Register" underline="none">
+                    <Button
+                      className="group"
+                      onMouseEnter={handleHover}
+                      onMouseLeave={handleHover}
+                      style={{ borderRadius: 100, fontWeight: 300 }}
+                      endDecorator={
+                        <div
+                          style={{
+                            position: "relative",
+                            left: hovered ? "5px" : "0",
+                            transition: "left 0.3s ease-in-out",
+                          }}>
+                          <ArrowForwardIcon
+                            // @ts-ignore
+                            fontSize="md"
+                          />
+                        </div>
+                      }>
+                      Get Started
+                    </Button>
+                  </Link>
+                )}
               </li>
             </ul>
           </div>
