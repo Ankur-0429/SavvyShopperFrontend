@@ -120,6 +120,14 @@ function App({ auth }: {auth: AuthType}) {
         </button>
 
         <Button onClick={async () => {
+          if (email == '') {
+            setEmailErr('Please enter your email');
+            return;
+          }
+          if (password == '') {
+            setPasswordErr('Please enter your password');
+            return;
+          }
           await auth?.registerWithEmailAndPassword(email, password).then(() => {checkError()});
         }} style={{marginTop: 20}} variant="solid">
           Continue

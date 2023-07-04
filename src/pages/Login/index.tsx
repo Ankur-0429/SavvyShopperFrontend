@@ -35,7 +35,6 @@ function App({auth}: {auth: AuthType}) {
 
   const checkError = () => {
     const err = auth?.error;
-    console.log(err);
 
     if (err === undefined) return;
 
@@ -120,7 +119,17 @@ function App({auth}: {auth: AuthType}) {
           Sign in with Google
         </button>
 
-        <Button onClick={async () => {await auth?.loginWithEmailAndPassword(email, password).then(() => {checkError()})}} style={{marginTop: 20}} variant="solid">
+        <Button onClick={async () => {
+          if (email == '') {
+            setEmailErr('Please enter your email');
+            return;
+          }
+          if (password == '') {
+            setPasswordErr('Please enter your password');
+            return;
+          }
+          await auth?.loginWithEmailAndPassword(email, password).then(() => {checkError()})
+        }} style={{marginTop: 20}} variant="solid">
           Continue
         </Button>
         <Typography
