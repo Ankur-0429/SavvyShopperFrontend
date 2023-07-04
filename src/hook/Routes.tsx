@@ -28,7 +28,7 @@ export function withProtected(Component: React.ComponentType<ComponentProps>) {
         const router = useRouter();
         if (!auth?.user) {
             router.replace('/Login');
-            return null;
+            return null
         }
         return <Component auth={auth} {...props} />;
     }

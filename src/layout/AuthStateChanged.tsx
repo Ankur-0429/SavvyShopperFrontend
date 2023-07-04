@@ -17,7 +17,7 @@ export default function AuthStateChanged({children}: { children: ReactNode }) {
     }, [])
 
     if (loading) {
-        return null;
+        return null
     }
 
     return children;
