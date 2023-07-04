@@ -6,6 +6,7 @@ import Image from "next/image";
 import Logo from "../../../public/SavvyShopper_Logo.png";
 import useAuth from "@/hook/Auth";
 import AvatarMenuDrop from "../AvatarMenuDrop";
+import { Typography } from "@mui/joy";
 
 const Navbar = () => {
   const [top, setTop] = useState(true);
@@ -46,7 +47,9 @@ const Navbar = () => {
                     href="/Login"
                     textColor="text.secondary"
                     fontWeight={300}>
-                    Login
+                      <Typography>
+                        Login
+                      </Typography>
                   </Link>
                 </li>
 

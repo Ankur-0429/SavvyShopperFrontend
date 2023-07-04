@@ -9,6 +9,7 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Link from "@mui/joy/Link";
 import Button from "@mui/joy/Button";
 import { useState } from "react";
+import { Typography } from "@mui/joy";
 
 export default function App() {
   const [hovered, setHovered] = useState(false);
@@ -63,8 +64,12 @@ export default function App() {
                   Get Started
                 </Button>
               </Link>
-              <Link href="/Login" p={3} textColor="text.secondary" fontWeight={300}>
-                Login
+              <Link
+                href="/Login"
+                p={3}
+                textColor="text.secondary"
+                fontWeight={300}>
+                <Typography>Login</Typography>
               </Link>
             </span>
           </h1>
