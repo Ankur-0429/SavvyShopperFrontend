@@ -1,511 +1,157 @@
-import * as React from 'react';
-import Box from '@mui/joy/Box';
-import Table from '@mui/joy/Table';
-import Typography from '@mui/joy/Typography';
-import Sheet from '@mui/joy/Sheet';
-import Checkbox from '@mui/joy/Checkbox';
-import FormControl from '@mui/joy/FormControl';
-import FormLabel from '@mui/joy/FormLabel';
-import IconButton from '@mui/joy/IconButton';
-import Link from '@mui/joy/Link';
-import Tooltip from '@mui/joy/Tooltip';
-import Select from '@mui/joy/Select';
-import Option from '@mui/joy/Option';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import { visuallyHidden } from '@mui/utils';
+import { Table, Row, Col, Tooltip, User, Text } from "@nextui-org/react";
+import { StyledBadge } from "./StyledBadge";
+import { IconButton } from "./IconButton";
+import { EyeIcon } from "./EyeIcon";
+import { EditIcon } from "./EditIcon";
+import { DeleteIcon } from "./DeleteIcon";
+import { Typography } from "@mui/joy";
 
-interface Data {
-  calories: number;
-  carbs: number;
-  fat: number;
+type ItemType = {
+  id: string | number;
   name: string;
-  protein: number;
-}
+  priorPrice: number;
+  awaitedPrice: number;
+  imageUrl?: string;
+  status: "processing" | "stopped" | "completed";
+};
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-): Data {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-  };
-}
+export default function App() {
+  const columns = [
+    { name: "Item", uid: "item" },
+    { name: "Prior Price", uid: "priorPrice" },
+    { name: "Awaited Price", uid: "awaitedPrice" },
+    { name: "STATUS", uid: "status" },
+    { name: "ACTIONS", uid: "actions" },
+  ];
+  const Items: ItemType[] = [
+    {
+      id: "1",
+      name: "ZOTAC Gaming GeForce RTX 3060 Twin Edge OC 12GB GDDR6 192-bit 15 Gbps PCIE 4.0 Graphics Card, IceStorm 2.0 Cooling, Active Fan Control, Freeze Fan Stop ZT-A30600H-10M",
+      priorPrice: 50,
+      awaitedPrice: 40,
+      imageUrl: "https://cdn4.iconfinder.com/data/icons/social-media-2146/512/31_social-512.png",
+      status: "processing",
+    },
+    {
+      id: 2,
+      name: "Dell i5 Desktop Computer PC | up to 16GB RAM, 4TB SSD | Windows 10 Pro, WiFi",
+      priorPrice: 20,
+      awaitedPrice: 15,
+      imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGdMt18SC8odpNAOLKPjWFdO1ElD3KdVXFUfgkPcs&s",
+      status: "stopped",
+    },
+    {
+      id: "3",
+      name: "LG - 65” Class UQ75 Series LED 4K UHD Smart webOS TV",
+      priorPrice: 100,
+      awaitedPrice: 90,
+      imageUrl: "data:image/jpeg;base64,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",
+      status: "completed",
+    },
+  ];
+  const renderCell = (item: ItemType, columnKey: React.Key) => {
+    // @ts-ignore
+    const cellValue = item[columnKey];
+    switch (columnKey) {
+      case "item":
+        return (
+          <User src={item.imageUrl} name={cellValue} css={{ p: 0 }}>
+            {item.name.length > 30 ? `${item.name.slice(0, 30)}...` : item.name}
+          </User>
+        );
+      case "priorPrice":
+        return (
+          <Col>
+            <Row>
+              <Text b size={14} css={{ tt: "capitalize" }}>
+                {cellValue}
+              </Text>
+            </Row>
+          </Col>
+        );
 
-const rows = [
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Donut', 452, 25.0, 51, 4.9),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-  createData('Honeycomb', 408, 3.2, 87, 6.5),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Jelly Bean', 375, 0.0, 94, 0.0),
-  createData('KitKat', 518, 26.0, 65, 7.0),
-  createData('Lollipop', 392, 0.2, 98, 0.0),
-  createData('Marshmallow', 318, 0, 81, 2.0),
-  createData('Nougat', 360, 19.0, 9, 37.0),
-  createData('Oreo', 437, 18.0, 63, 4.0),
-];
+      case "awaitedPrice":
+        return (
+          <Col>
+            <Row>
+              <Text b size={14} css={{ tt: "capitalize" }}>
+                {cellValue}
+              </Text>
+            </Row>
+          </Col>
+        );
+      case "status":
+        return <StyledBadge type={item.status}>{cellValue}</StyledBadge>;
 
-function labelDisplayedRows({
-  from,
-  to,
-  count,
-}: {
-  from: number;
-  to: number;
-  count: number;
-}) {
-  return `${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`;
-}
-
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-type Order = 'asc' | 'desc';
-
-function getComparator<Key extends keyof any>(
-  order: Order,
-  orderBy: Key,
-): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string },
-) => number {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-// Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
-// stableSort() brings sort stability to non-modern browsers (notably IE11). If you
-// only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
-// with exampleArray.slice().sort(exampleComparator)
-function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
-  const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
+      case "actions":
+        return (
+          <Row justify="center" align="center">
+            <Col css={{ d: "flex" }}>
+              <Tooltip content="Details">
+                <IconButton onClick={() => console.log("View item", item.id)}>
+                  <EyeIcon size={20} fill="#979797" />
+                </IconButton>
+              </Tooltip>
+            </Col>
+            <Col css={{ d: "flex" }}>
+              <Tooltip content="Edit user">
+                <IconButton onClick={() => console.log("Edit item", item.id)}>
+                  <EditIcon size={20} fill="#979797" />
+                </IconButton>
+              </Tooltip>
+            </Col>
+            <Col css={{ d: "flex" }}>
+              <Tooltip
+                content="Delete user"
+                color="error"
+                onClick={() => console.log("Delete item", item.id)}>
+                <IconButton>
+                  <DeleteIcon size={20} fill="#FF0080" />
+                </IconButton>
+              </Tooltip>
+            </Col>
+          </Row>
+        );
+      default:
+        return cellValue;
     }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
-
-interface HeadCell {
-  disablePadding: boolean;
-  id: keyof Data;
-  label: string;
-  numeric: boolean;
-}
-
-const headCells: readonly HeadCell[] = [
-  {
-    id: 'name',
-    numeric: false,
-    disablePadding: true,
-    label: 'Dessert (100g serving)',
-  },
-  {
-    id: 'calories',
-    numeric: true,
-    disablePadding: false,
-    label: 'Calories',
-  },
-  {
-    id: 'fat',
-    numeric: true,
-    disablePadding: false,
-    label: 'Fat (g)',
-  },
-  {
-    id: 'carbs',
-    numeric: true,
-    disablePadding: false,
-    label: 'Carbs (g)',
-  },
-  {
-    id: 'protein',
-    numeric: true,
-    disablePadding: false,
-    label: 'Protein (g)',
-  },
-];
-
-interface EnhancedTableProps {
-  numSelected: number;
-  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
-  onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  order: Order;
-  orderBy: string;
-  rowCount: number;
-}
-
-function EnhancedTableHead(props: EnhancedTableProps) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
-    props;
-  const createSortHandler =
-    (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
-      onRequestSort(event, property);
-    };
-
+  };
   return (
-    <thead>
-      <tr>
-        <th>
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            slotProps={{
-              input: {
-                'aria-label': 'select all desserts',
-              },
-            }}
-            sx={{ verticalAlign: 'sub' }}
-          />
-        </th>
-        {headCells.map((headCell) => {
-          const active = orderBy === headCell.id;
-          return (
-            <th
-              key={headCell.id}
-              aria-sort={
-                active
-                  ? ({ asc: 'ascending', desc: 'descending' } as const)[order]
-                  : undefined
-              }
-            >
-              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-              <Link
-                underline="none"
-                color="neutral"
-                textColor={active ? 'primary.plainColor' : undefined}
-                component="button"
-                onClick={createSortHandler(headCell.id)}
-                fontWeight="lg"
-                startDecorator={
-                  headCell.numeric ? (
-                    <ArrowDownwardIcon sx={{ opacity: active ? 1 : 0 }} />
-                  ) : null
-                }
-                endDecorator={
-                  !headCell.numeric ? (
-                    <ArrowDownwardIcon sx={{ opacity: active ? 1 : 0 }} />
-                  ) : null
-                }
-                sx={{
-                  '& svg': {
-                    transition: '0.2s',
-                    transform:
-                      active && order === 'desc' ? 'rotate(0deg)' : 'rotate(180deg)',
-                  },
-                  '&:hover': { '& svg': { opacity: 1 } },
-                }}
-              >
-                {headCell.label}
-                {active ? (
-                  <Box component="span" sx={visuallyHidden}>
-                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                  </Box>
-                ) : null}
-              </Link>
-            </th>
-          );
-        })}
-      </tr>
-    </thead>
-  );
-}
-
-interface EnhancedTableToolbarProps {
-  numSelected: number;
-}
-
-function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected } = props;
-
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        py: 1,
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: 'background.level1',
-        }),
-        borderTopLeftRadius: 'var(--unstable_actionRadius)',
-        borderTopRightRadius: 'var(--unstable_actionRadius)',
-      }}
-    >
-      {numSelected > 0 ? (
-        <Typography sx={{ flex: '1 1 100%' }} component="div">
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          level="h6"
-          sx={{ flex: '1 1 100%' }}
-          id="tableTitle"
-          component="div"
-        >
-          Nutrition
-        </Typography>
-      )}
-
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton size="sm" color="danger" variant="solid">
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton size="sm" variant="outlined" color="neutral">
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-    </Box>
-  );
-}
-
-export default function TableSortAndSelection() {
-  const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof Data>('calories');
-  const [selected, setSelected] = React.useState<readonly string[]>([]);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-  const handleRequestSort = (
-    event: React.MouseEvent<unknown>,
-    property: keyof Data,
-  ) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
-
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelected = rows.map((n) => n.name);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected: readonly string[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-
-    setSelected(newSelected);
-  };
-
-  const handleChangePage = (newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: any, newValue: number | null) => {
-    setRowsPerPage(parseInt(newValue!.toString(), 10));
-    setPage(0);
-  };
-
-  const getLabelDisplayedRowsTo = () => {
-    if (rows.length === -1) {
-      return (page + 1) * rowsPerPage;
-    }
-    return rowsPerPage === -1
-      ? rows.length
-      : Math.min(rows.length, (page + 1) * rowsPerPage);
-  };
-
-  const isSelected = (name: string) => selected.indexOf(name) !== -1;
-
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-  return (
-    <Sheet
-      variant="outlined"
-      sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm' }}
-    >
-      <EnhancedTableToolbar numSelected={selected.length} />
+    <Typography>
       <Table
-        aria-labelledby="tableTitle"
-        hoverRow
-        sx={{
-          '--TableCell-headBackground': 'transparent',
-          '--TableCell-selectedBackground': (theme) =>
-            theme.vars.palette.info.softBg,
-          '& thead th:nth-child(1)': {
-            width: '40px',
-          },
-          '& thead th:nth-child(2)': {
-            width: '30%',
-          },
-          '& tr > *:nth-child(n+3)': { textAlign: 'right' },
+        aria-label="Example table with custom cells"
+        css={{
+          height: "auto",
+          minWidth: "100%",
         }}
-      >
-        <EnhancedTableHead
-          numSelected={selected.length}
-          order={order}
-          orderBy={orderBy}
-          onSelectAllClick={handleSelectAllClick}
-          onRequestSort={handleRequestSort}
-          rowCount={rows.length}
-        />
-        <tbody>
-          {stableSort(rows, getComparator(order, orderBy))
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((row, index) => {
-              const isItemSelected = isSelected(row.name);
-              const labelId = `enhanced-table-checkbox-${index}`;
-
-              return (
-                <tr
-                  onClick={(event) => handleClick(event, row.name)}
-                  role="checkbox"
-                  aria-checked={isItemSelected}
-                  tabIndex={-1}
-                  key={row.name}
-                  // selected={isItemSelected}
-                  style={
-                    isItemSelected
-                      ? ({
-                          '--TableCell-dataBackground':
-                            'var(--TableCell-selectedBackground)',
-                          '--TableCell-headBackground':
-                            'var(--TableCell-selectedBackground)',
-                        } as React.CSSProperties)
-                      : {}
-                  }
-                >
-                  <th scope="row">
-                    <Checkbox
-                      checked={isItemSelected}
-                      slotProps={{
-                        input: {
-                          'aria-labelledby': labelId,
-                        },
-                      }}
-                      sx={{ verticalAlign: 'top' }}
-                    />
-                  </th>
-                  <th id={labelId} scope="row">
-                    {row.name}
-                  </th>
-                  <td>{row.calories}</td>
-                  <td>{row.fat}</td>
-                  <td>{row.carbs}</td>
-                  <td>{row.protein}</td>
-                </tr>
-              );
-            })}
-          {emptyRows > 0 && (
-            <tr
-              style={
-                {
-                  height: `calc(${emptyRows} * 40px)`,
-                  '--TableRow-hoverBackground': 'transparent',
-                } as React.CSSProperties
-              }
-            >
-              <td colSpan={6} />
-            </tr>
+        selectionMode="none">
+        <Table.Header columns={columns}>
+          {(column) => (
+            <Table.Column
+              key={column.uid}
+              hideHeader={column.uid === "actions"}
+              align={column.uid === "actions" ? "center" : "start"}>
+              {column.name}
+            </Table.Column>
           )}
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colSpan={6}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 2,
-                  justifyContent: 'flex-end',
-                }}
-              >
-                <FormControl orientation="horizontal" size="sm">
-                  <FormLabel>Rows per page:</FormLabel>
-                  <Select onChange={handleChangeRowsPerPage} value={rowsPerPage}>
-                    <Option value={5}>5</Option>
-                    <Option value={10}>10</Option>
-                    <Option value={25}>25</Option>
-                  </Select>
-                </FormControl>
-                <Typography textAlign="center" sx={{ minWidth: 80 }}>
-                  {labelDisplayedRows({
-                    from: rows.length === 0 ? 0 : page * rowsPerPage + 1,
-                    to: getLabelDisplayedRowsTo(),
-                    count: rows.length === -1 ? -1 : rows.length,
-                  })}
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <IconButton
-                    size="sm"
-                    color="neutral"
-                    variant="outlined"
-                    disabled={page === 0}
-                    onClick={() => handleChangePage(page - 1)}
-                    sx={{ bgcolor: 'background.surface' }}
-                  >
-                    <KeyboardArrowLeftIcon />
-                  </IconButton>
-                  <IconButton
-                    size="sm"
-                    color="neutral"
-                    variant="outlined"
-                    disabled={
-                      rows.length !== -1
-                        ? page >= Math.ceil(rows.length / rowsPerPage) - 1
-                        : false
-                    }
-                    onClick={() => handleChangePage(page + 1)}
-                    sx={{ bgcolor: 'background.surface' }}
-                  >
-                    <KeyboardArrowRightIcon />
-                  </IconButton>
-                </Box>
-              </Box>
-            </td>
-          </tr>
-        </tfoot>
+        </Table.Header>
+        <Table.Body items={Items}>
+          {(item: ItemType) => (
+            <Table.Row>
+              {(columnKey) => (
+                <Table.Cell>{renderCell(item, columnKey)}</Table.Cell>
+              )}
+            </Table.Row>
+          )}
+        </Table.Body>
+        <Table.Pagination
+        shadow
+        noMargin
+        align="center"
+        rowsPerPage={2}
+        onPageChange={(page) => console.log({ page })}
+      />
       </Table>
-    </Sheet>
+    </Typography>
   );
 }
