@@ -13,7 +13,7 @@ export default function AvatorMenuDrop() {
         <Dropdown.Trigger>
         <Avatar
             alt={auth.user.email?.toUpperCase() || "G"}
-            src={undefined}
+            src={auth.user.photoURL || undefined}
             color="primary"
         />
         </Dropdown.Trigger>
