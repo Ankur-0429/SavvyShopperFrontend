@@ -20,16 +20,6 @@ function App({ auth }: { auth: AuthType }) {
   const [password, setPassword] = useState("");
   const [passwordErr, setPasswordErr] = useState("");
 
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmailErr("");
-    setEmail(event.target.value);
-  };
-
-  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPasswordErr("");
-    setPassword(event.target.value);
-  };
-
   const checkError = () => {
     const err = auth?.error;
     console.log(err);
