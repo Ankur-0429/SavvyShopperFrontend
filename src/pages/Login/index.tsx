@@ -4,17 +4,15 @@ import * as React from "react";
 import { CssVarsProvider } from "@mui/joy/styles";
 import Sheet from "@mui/joy/Sheet";
 import Typography from "@mui/joy/Typography";
-import FormControl from "@mui/joy/FormControl";
-import FormLabel from "@mui/joy/FormLabel";
-import Input from "@mui/joy/Input";
-import Button from "@mui/joy/Button";
 import Link from "@mui/joy/Link";
 import Divider from "@mui/joy/Divider";
 import '../../../styles/googleSignIn.css'
 import { AuthType } from "@/hook/Auth";
 import { withPublic } from "@/hook/Routes";
 import { useEffect, useState } from "react";
-import FormHelperText from "@mui/joy/FormHelperText";
+import { Input, Row, Checkbox, Button, Text, Spacer } from "@nextui-org/react";
+import { Mail } from "@/components/Mail";
+import { Password } from "@/components/Password";
 
 function App({auth}: {auth: AuthType}) {
 
@@ -22,11 +20,6 @@ function App({auth}: {auth: AuthType}) {
   const [emailErr, setEmailErr] = useState('');
   const [password, setPassword] = useState('');
   const [passwordErr, setPasswordErr] = useState('');
-
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmailErr('');
-    setEmail(event.target.value);
-  };
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPasswordErr('');
@@ -89,27 +82,44 @@ function App({auth}: {auth: AuthType}) {
           <Typography textColor="gray" level="body1" textAlign="center">We&apos;ll check if you have an email</Typography>
         </div>
 
-        <FormControl required>
-          <FormLabel>Email</FormLabel>
+        <Typography>
           <Input
-            name="email"
-            type="email"
-            placeholder="johndoe@email.com"
-            value={email}
-            error={emailErr!==''}
-            onChange={handleEmailChange}
-          />
-          <FormHelperText>
-            {emailErr !== '' && emailErr}
-          </FormHelperText>
-        </FormControl>
-        <FormControl required>
-          <FormLabel>Password</FormLabel>
-          <Input name="password" type="password" placeholder="password" value={password} onChange={handlePasswordChange} error={passwordErr!==''} />
-          <FormHelperText>
-            {passwordErr !== '' && passwordErr}
-          </FormHelperText>
-        </FormControl>
+              bordered
+              fullWidth
+              size="lg"
+              placeholder="Email"
+              value={email}
+              color={emailErr!=='' ? "error":"primary"}
+              onChange={(event)=>{
+                setEmailErr('');
+                setEmail(event.target.value);
+              }}
+              helperText={emailErr}
+              helperColor="error"
+              contentLeft={<Mail fill="currentColor" />}
+            />
+            <Spacer y={1.5} />
+            <Input.Password
+              bordered
+              fullWidth
+              type="password"
+              size="lg"
+              placeholder="Password"
+              value={password}
+              color={passwordErr!=='' ? "error":"primary"}
+              onChange={(event)=>{
+                setPasswordErr('');
+                setPassword(event.target.value);
+              }}
+              helperText={passwordErr}
+              helperColor="error"
+              contentLeft={<Password fill="currentColor" />}
+            />
+        </Typography>
+
+        
+
+        <Spacer y={0.5} />
 
         <Divider>
           or
@@ -129,7 +139,7 @@ function App({auth}: {auth: AuthType}) {
             return;
           }
           await auth?.loginWithEmailAndPassword(email, password).then(() => {checkError()})
-        }} style={{marginTop: 20}} variant="solid">
+        }} style={{marginTop: 20}}>
           Continue
         </Button>
         <Typography
