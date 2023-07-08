@@ -8,7 +8,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <AuthProvider>
       <AuthStateChanged>
-        <Component {...pageProps} />;
+        <Component {...pageProps} />
       </AuthStateChanged>
     </AuthProvider>
   );
