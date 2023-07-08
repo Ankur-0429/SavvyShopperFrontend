@@ -9,7 +9,9 @@ function App({auth}: {auth: AuthType}) {
         <div>
             <Navbar />
             <div className="max-w-[1240px] mx-auto">
-                <Model />
+                <div className="flex justify-end">
+                    <Model />
+                </div>
                 <ItemTable />
             </div>
         </div>
