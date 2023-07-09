@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Input, Button, Loading } from "@nextui-org/react";
+import {
+  Modal,
+  Input,
+  Button,
+  Loading,
+  Spacer,
+  Image,
+} from "@nextui-org/react";
 import { Typography } from "@mui/joy";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 interface URLSuccessResponse {
+  name: string;
+  price: number;
+  retailer: {
     name: string;
-    price: string;
+    icon: string;
+  }
 }
 
 export default function Model() {
@@ -13,23 +24,33 @@ export default function Model() {
   const [url, setUrl] = React.useState("");
   const [urlErr, setUrlErr] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState(0);
+  const [retailerName, setRetailerName] = useState("");
+  const [retailerIcon, setRetailerIcon] = useState("");
   const handler = () => setVisible(true);
   const closeHandler = () => {
     setVisible(false);
   };
 
   const executeUrlGetRequest = async () => {
-    try {
-      const response = await axios.get<URLSuccessResponse>("http://100.64.20.52:7789/search", {
+    axios
+      .get<URLSuccessResponse>("http://100.64.20.52:7789/search", {
         params: {
           url: url,
         },
+      })
+      .then(({ data }) => {
+        setName(data.name);
+        setPrice(data.price);
+        setRetailerName(data.retailer.name);
+        setRetailerIcon(data.retailer.icon);
+        setIsLoading(false);
+      })
+      .catch(({ response }) => {
+        setUrlErr(response?.data?.error);
+        setIsLoading(false);
       });
-      console.log(response.data.name);
-    } catch (error) {
-      console.log(error);
-    }
-    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -40,7 +61,7 @@ export default function Model() {
     }, 1000);
 
     return () => clearTimeout(delayDebounceFn);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
 
   return (
@@ -50,6 +71,7 @@ export default function Model() {
       </Button>
       <Typography>
         <Modal
+          scroll={false}
           blur
           aria-labelledby="modal-title"
           open={visible}
@@ -62,6 +84,7 @@ export default function Model() {
               <Input
                 bordered
                 fullWidth
+                type="url"
                 size="lg"
                 placeholder="Paste URL here"
                 contentRight={isLoading && <Loading size="sm" />}
@@ -69,13 +92,46 @@ export default function Model() {
                 color={urlErr !== "" ? "error" : "primary"}
                 onChange={(event) => {
                   setUrlErr("");
+                  setPrice(0);
                   setIsLoading(event.target.value != "");
                   setUrl(event.target.value);
                 }}
                 helperText={urlErr}
                 helperColor="error"
               />
+              <Spacer y={1} />
+
+              <div className={`${price == 0 && "hidden"}`}>
+                <div className="flex flex-row">
+                    <Image objectFit="cover" src={retailerIcon} alt="retailer icon" width={50} height={50} className="rounded-full shrink-0" />
+                    <Spacer x={1} />
+                    <Typography>
+                        {name}
+                    </Typography>
+                </div>
+                <Spacer y={1} />
+                <div className="flex flex-row">
+                  <Input
+                    labelLeft={"$"}
+                    disabled
+                    placeholder={price.toString()}
+                    label="Current Price"
+                    className="mr-1"
+                  />
+                  <Input
+                    labelLeft={"$"}
+                    type="number"
+                    placeholder="0"
+                    label="Desired Price"
+                    className="ml-1"
+                    step="0.01"
+                    min="0"
+                    pattern="^\$[0-9]+(\.[0-9]{0,2})?$"
+                  />
+                </div>
+              </div>
             </Typography>
+            <Spacer y={0.5} />
           </Modal.Body>
           <Modal.Footer>
             <Button auto flat color="error" onPress={closeHandler}>
