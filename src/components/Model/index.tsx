@@ -8,7 +8,6 @@ import {
   Image,
 } from "@nextui-org/react";
 import { Typography } from "@mui/joy";
-import axios, { AxiosError } from "axios";
 import fetchClient from "@/service/FetchClient";
 
 interface URLSuccessResponse {
@@ -17,7 +16,7 @@ interface URLSuccessResponse {
   retailer: {
     name: string;
     icon: string;
-  }
+  };
 }
 
 export default function Model() {
@@ -27,11 +26,35 @@ export default function Model() {
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
+  const [desiredPrice, setDesiredPrice] = useState(0);
   const [retailerName, setRetailerName] = useState("");
   const [retailerIcon, setRetailerIcon] = useState("");
   const handler = () => setVisible(true);
   const closeHandler = () => {
     setVisible(false);
+  };
+
+  const newTaskData = {
+    url: url,
+    retailer: {
+      name: retailerName,
+      icon: retailerIcon,
+    },
+    price_data: [price],
+    desired_price: desiredPrice,
+    start_date: new Date().toISOString(),
+    item_name: name,
+  };
+
+  const reset = () => {
+    setUrl("");
+    setUrlErr("");
+    setIsLoading(false);
+    setName("");
+    setPrice(0);
+    setDesiredPrice(0);
+    setRetailerIcon("");
+    setRetailerName("");
   };
 
   const executeUrlGetRequest = async () => {
@@ -51,6 +74,17 @@ export default function Model() {
       .catch(({ response }) => {
         setUrlErr(response?.data?.error);
         setIsLoading(false);
+      });
+  };
+
+  const executeAddItemPostRequest = async () => {
+    fetchClient
+      .post("/schedule", newTaskData)
+      .then(({ data }) => {
+        console.log(data);
+      })
+      .catch(({ response }) => {
+        console.log(response);
       });
   };
 
@@ -94,7 +128,7 @@ export default function Model() {
                 color={urlErr !== "" ? "error" : "primary"}
                 onChange={(event) => {
                   setUrlErr("");
-                  setPrice(0);
+                  reset();
                   setIsLoading(event.target.value != "");
                   setUrl(event.target.value);
                 }}
@@ -105,11 +139,16 @@ export default function Model() {
 
               <div className={`${price == 0 && "hidden"}`}>
                 <div className="flex flex-row">
-                    <Image objectFit="contain" src={retailerIcon} alt="retailer icon" width={50} height={50} className="rounded-full shrink-0" />
-                    <Spacer x={1} />
-                    <Typography>
-                        {name}
-                    </Typography>
+                  <Image
+                    objectFit="contain"
+                    src={retailerIcon}
+                    alt="retailer icon"
+                    width={50}
+                    height={50}
+                    className="rounded-full shrink-0"
+                  />
+                  <Spacer x={1} />
+                  <Typography>{name}</Typography>
                 </div>
                 <Spacer y={1} />
                 <div className="flex flex-row">
@@ -129,6 +168,13 @@ export default function Model() {
                     step="0.01"
                     min="0"
                     pattern="^\$[0-9]+(\.[0-9]{0,2})?$"
+                    value={desiredPrice}
+                    onChange={(event) => {
+                      const newPrice = parseFloat(
+                        parseFloat(event.target.value).toFixed(2)
+                      );
+                      setDesiredPrice(newPrice);
+                    }}
                   />
                 </div>
               </div>
@@ -139,7 +185,15 @@ export default function Model() {
             <Button auto flat color="error" onPress={closeHandler}>
               Close
             </Button>
-            <Button auto onPress={closeHandler} disabled>
+            <Button
+              auto
+              onPress={() => {
+                executeAddItemPostRequest().then(() => {
+                  reset();
+                  closeHandler();
+                });
+              }}
+              disabled={desiredPrice === 0}>
               Add Task
             </Button>
           </Modal.Footer>

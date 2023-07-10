@@ -1,20 +1,20 @@
 import axios from 'axios';
-import firebase from 'firebase/app';
 import { auth } from '../../firebase/clientApp';
 
 const fetchClient = (() => {
     const getAuthToken = async () => {
         try {
-            const token = await auth.currentUser?.getIdToken();
-            console.log(token);
-            return token;
+            return await auth.currentUser?.getIdToken();
         } catch(err) {
             console.log("getAuthToken", err);
         };
     };
 
+    console.log(process.env.NEXT_PUBLIC_BASE_URL);
+
     const instance = axios.create({
-        baseURL: process.env.NEXT_PUBLIC_BASE_URL
+        baseURL: process.env.NEXT_PUBLIC_BASE_URL,
+        timeout: 10000
     });
 
     instance.interceptors.request.use(async (config) => {
