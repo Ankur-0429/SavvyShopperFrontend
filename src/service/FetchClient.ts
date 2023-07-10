@@ -6,6 +6,7 @@ const fetchClient = (() => {
     const getAuthToken = async () => {
         try {
             const token = await auth.currentUser?.getIdToken();
+            console.log(token);
             return token;
         } catch(err) {
             console.log("getAuthToken", err);
@@ -13,7 +14,7 @@ const fetchClient = (() => {
     };
 
     const instance = axios.create({
-        baseURL: 'http://100.64.20.52:7789'
+        baseURL: process.env.NEXT_PUBLIC_BASE_URL
     });
 
     instance.interceptors.request.use(async (config) => {

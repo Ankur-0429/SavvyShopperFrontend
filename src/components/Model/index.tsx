@@ -87,6 +87,7 @@ export default function Model() {
                 fullWidth
                 type="url"
                 size="lg"
+                aria-label="Paste URL here"
                 placeholder="Paste URL here"
                 contentRight={isLoading && <Loading size="sm" />}
                 value={url}
