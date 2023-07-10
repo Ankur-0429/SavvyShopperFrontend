@@ -9,6 +9,7 @@ import {
 } from "@nextui-org/react";
 import { Typography } from "@mui/joy";
 import axios, { AxiosError } from "axios";
+import fetchClient from "@/service/FetchClient";
 
 interface URLSuccessResponse {
   name: string;
@@ -34,8 +35,8 @@ export default function Model() {
   };
 
   const executeUrlGetRequest = async () => {
-    axios
-      .get<URLSuccessResponse>("http://100.64.20.52:7789/search", {
+    fetchClient
+      .get<URLSuccessResponse>("/search", {
         params: {
           url: url,
         },
@@ -103,7 +104,7 @@ export default function Model() {
 
               <div className={`${price == 0 && "hidden"}`}>
                 <div className="flex flex-row">
-                    <Image objectFit="cover" src={retailerIcon} alt="retailer icon" width={50} height={50} className="rounded-full shrink-0" />
+                    <Image objectFit="contain" src={retailerIcon} alt="retailer icon" width={50} height={50} className="rounded-full shrink-0" />
                     <Spacer x={1} />
                     <Typography>
                         {name}
