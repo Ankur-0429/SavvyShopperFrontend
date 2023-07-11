@@ -140,7 +140,7 @@ export default function App({ items }: { items: ItemType[] }) {
         <Table.Pagination
           noMargin
           align="center"
-          rowsPerPage={2}
+          rowsPerPage={10}
           onPageChange={(page) => console.log({ page })}
         />
       </Table>
