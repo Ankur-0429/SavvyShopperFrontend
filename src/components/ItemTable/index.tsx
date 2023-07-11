@@ -1,4 +1,4 @@
-import { Table, Row, Col, Tooltip, User, Text } from "@nextui-org/react";
+import { Table, Row, Col, Tooltip, Image, Text } from "@nextui-org/react";
 import { StyledBadge } from "./StyledBadge";
 import { IconButton } from "./IconButton";
 import { EyeIcon } from "./EyeIcon";
@@ -21,9 +21,10 @@ export interface ItemType {
   status: "processing" | "stopped" | "completed";
 }
 
-export default function App({items}: {items: ItemType[]}) {
+export default function App({ items }: { items: ItemType[] }) {
   const columns = [
     { name: "Item", uid: "item" },
+    { name: "title", uid: "title" },
     { name: "Original Price", uid: "priorPrice" },
     { name: "Awaited Price", uid: "awaitedPrice" },
     { name: "Status", uid: "status" },
@@ -36,10 +37,21 @@ export default function App({items}: {items: ItemType[]}) {
     switch (columnKey) {
       case "item":
         return (
-          <User src={item.retailer.icon} name={cellValue} css={{ p: 0 }}>
-            {item.item_name.length > 30 ? `${item.item_name.slice(0, 30)}...` : item.item_name}
-          </User>
+          <Image
+            objectFit="contain"
+            src={item.retailer.icon}
+            alt="retailer icon"
+            width={50}
+            height={50}
+            className="rounded-full shrink-0"
+          />
         );
+      case "title":
+        return (
+          <Typography>
+            {item.item_name}
+          </Typography>
+        )
       case "priorPrice":
         return (
           <Col>
@@ -75,13 +87,11 @@ export default function App({items}: {items: ItemType[]}) {
               </Tooltip>
             </Col>
             <Col css={{ d: "flex" }}>
-             
-                <Tooltip content="Edit item">
-                  <IconButton>
-                    <EditIcon size={20} fill="#979797" />
-                  </IconButton>
-                </Tooltip>
-              
+              <Tooltip content="Edit item">
+                <IconButton>
+                  <EditIcon size={20} fill="#979797" />
+                </IconButton>
+              </Tooltip>
             </Col>
             <Col css={{ d: "flex" }}>
               <Tooltip
