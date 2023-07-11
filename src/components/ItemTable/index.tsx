@@ -112,6 +112,7 @@ export default function App({ items }: { items: ItemType[] }) {
   return (
     <Typography>
       <Table
+        className="z-0"
         aria-label="Example table with custom cells"
         css={{
           height: "auto",

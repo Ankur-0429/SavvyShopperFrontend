@@ -2,14 +2,16 @@
 import "@fontsource/public-sans";
 import * as React from "react";
 import "../../styles/googleSignIn.css";
-import Navbar from "../components/Navbar";
 import Lottie from "lottie-react";
 import HeroSection from "../../public/HeroSection.json";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Link from "@mui/joy/Link";
 import Button from "@mui/joy/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Typography } from "@mui/joy";
+import Navbar from "@/components/Navbar";
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 export default function App() {
   const [hovered, setHovered] = useState(false);
@@ -18,9 +20,19 @@ export default function App() {
     setHovered(!hovered);
   };
 
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div>
-      <Navbar />
+      {isLoading ? <Skeleton height={50} borderRadius={10} /> : <Navbar />}
       <div
         style={{
           display: "flex",

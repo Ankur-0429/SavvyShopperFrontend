@@ -8,11 +8,10 @@ import fetchClient from "@/service/FetchClient";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import useScreenSize from "@/hook/useScreenSize";
-
 function App({ auth }: { auth: AuthType }) {
   const [items, setItems] = useState<ItemType[]>([]);
   const [showSkeleton, setShowSkeleton] = useState(true);
-  const {width} = useScreenSize();
+  const { width } = useScreenSize();
   console.log(width);
 
   useEffect(() => {
@@ -31,11 +30,11 @@ function App({ auth }: { auth: AuthType }) {
   return (
     <div>
       <Navbar />
-      <div className="max-w-[1240px] mx-auto">
+      <div className="max-w-[1240px] mx-auto mt-5">
         <div className="flex justify-end mb-5">
           <Model items={items} setItems={setItems} />
         </div>
-        {true ? (
+        {showSkeleton ? (
           <div>
             {Array(10)
               .fill(10)
@@ -43,7 +42,14 @@ function App({ auth }: { auth: AuthType }) {
                 <div key={index} className="flex flex-row w-full mb-5">
                   <Skeleton height={50} circle width={50} />
                   <div>
-                    <Skeleton height={50} borderRadius={10} style={{marginLeft: 30, width: width > 1240 ? 1160 : width-100}} />
+                    <Skeleton
+                      height={50}
+                      borderRadius={10}
+                      style={{
+                        marginLeft: 30,
+                        width: width > 1240 ? 1160 : width - 100,
+                      }}
+                    />
                   </div>
                 </div>
               ))}
