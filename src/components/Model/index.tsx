@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   Modal,
   Input,
@@ -9,6 +9,8 @@ import {
 } from "@nextui-org/react";
 import { Typography } from "@mui/joy";
 import fetchClient from "@/service/FetchClient";
+import { ItemType } from "../ItemTable";
+import useAuth from "@/hook/Auth";
 
 interface URLSuccessResponse {
   name: string;
@@ -19,7 +21,7 @@ interface URLSuccessResponse {
   };
 }
 
-export default function Model() {
+export default function Model({items, setItems}: {items: ItemType[],setItems: Dispatch<SetStateAction<ItemType[]>>}) {
   const [visible, setVisible] = React.useState(false);
   const [url, setUrl] = React.useState("");
   const [urlErr, setUrlErr] = useState("");
@@ -33,6 +35,7 @@ export default function Model() {
   const closeHandler = () => {
     setVisible(false);
   };
+  const auth = useAuth();
 
   const newTaskData = {
     url: url,
@@ -189,6 +192,23 @@ export default function Model() {
               auto
               onPress={() => {
                 executeAddItemPostRequest().then(() => {
+                  const itemData:ItemType = {
+                    desired_price: desiredPrice,
+                    item_name: name,
+                    price_data: [price],
+                    retailer: {
+                      icon: retailerIcon,
+                      name: retailerName
+                    },
+                    start_date: new Date().toISOString(),
+                    uid: auth?.user?.uid || '0',
+                    url: url,
+                    status: 'processing',
+                    id: Date.now().toString()
+                  }
+                  const newData = [...items, itemData];
+                  console.log(newData);
+                  setItems(newData);
                   reset();
                   closeHandler();
                 });
