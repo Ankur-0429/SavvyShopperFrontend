@@ -11,6 +11,7 @@ import { Typography } from "@mui/joy";
 import fetchClient from "@/service/FetchClient";
 import { ItemType } from "../ItemTable";
 import useAuth from "@/hook/Auth";
+import { toast } from "react-toastify";
 
 interface URLSuccessResponse {
   name: string;
@@ -83,11 +84,36 @@ export default function Model({items, setItems}: {items: ItemType[],setItems: Di
   const executeAddItemPostRequest = async () => {
     fetchClient
       .post("/schedule", newTaskData)
-      .then(({ data }) => {
-        console.log(data);
+      .then(() => {
+        const itemData:ItemType = {
+          desired_price: desiredPrice,
+          item_name: name,
+          price_data: [price],
+          retailer: {
+            icon: retailerIcon,
+            name: retailerName
+          },
+          start_date: new Date().toISOString(),
+          uid: auth?.user?.uid || '0',
+          url: url,
+          status: 'processing',
+          id: Date.now().toString()
+        }
+        const newData = [...items, itemData];
+        console.log(newData);
+        setItems(newData);
       })
       .catch(({ response }) => {
-        console.log(response);
+        toast.warn(response.data.error, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
       });
   };
 
@@ -192,23 +218,6 @@ export default function Model({items, setItems}: {items: ItemType[],setItems: Di
               auto
               onPress={() => {
                 executeAddItemPostRequest().then(() => {
-                  const itemData:ItemType = {
-                    desired_price: desiredPrice,
-                    item_name: name,
-                    price_data: [price],
-                    retailer: {
-                      icon: retailerIcon,
-                      name: retailerName
-                    },
-                    start_date: new Date().toISOString(),
-                    uid: auth?.user?.uid || '0',
-                    url: url,
-                    status: 'processing',
-                    id: Date.now().toString()
-                  }
-                  const newData = [...items, itemData];
-                  console.log(newData);
-                  setItems(newData);
                   reset();
                   closeHandler();
                 });
