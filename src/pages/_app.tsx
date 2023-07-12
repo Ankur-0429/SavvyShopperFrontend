@@ -4,7 +4,7 @@ import AuthStateChanged from "@/layout/AuthStateChanged";
 import "../app/globals.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import * as gtag from "./gtag";
+import * as gtag from "../service/gtag";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Script from "next/script";
