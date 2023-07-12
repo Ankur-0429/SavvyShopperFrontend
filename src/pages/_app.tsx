@@ -4,7 +4,7 @@ import AuthStateChanged from "@/layout/AuthStateChanged";
 import "../app/globals.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import * as gtag from "../service/gtag";
+import "../../firebase/clientApp";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Script from "next/script";
@@ -13,25 +13,30 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
 
   useEffect(() => {
-    // function to get the current page url and pass it to gtag pageView() function
     const handleRouteChange = (url: string) => {
-      gtag.pageView(url);
+      window.gtag(
+        "config",
+        process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID as string,
+        {
+          page_path: url,
+        }
+      );
     };
 
     router.events.on("routeChangeComplete", handleRouteChange);
-    router.events.on("hashChangeComplete", handleRouteChange);
-
+    handleRouteChange(window.location.pathname);
     return () => {
       router.events.off("routeChangeComplete", handleRouteChange);
-      router.events.off("hashChangeComplete", handleRouteChange);
     };
-  }, [router.events]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
+      {/* gtag script code */}
       <Script
         strategy="afterInteractive"
-        src={`https://www.googletagmanager.com/gtag/js?id=${gtag.GA_TRACKING_ID}`}
+        src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID as string}`}
       />
       <Script
         id="gtag-init"
@@ -42,7 +47,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
         
-          gtag('config', '${gtag.GA_TRACKING_ID}', {
+          gtag('config', '${process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID as string}', {
             page_path: window.location.pathname
           });`,
         }}

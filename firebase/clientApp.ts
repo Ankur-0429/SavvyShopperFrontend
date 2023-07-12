@@ -1,5 +1,6 @@
 import { initializeApp, getApps } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
+import { getAnalytics, isSupported } from 'firebase/analytics';
 
 const clientCreds = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -16,3 +17,4 @@ if (!getApps().length) {
 }
 
 export const auth = getAuth();
+export const analytics = isSupported().then(yes => yes ? getAnalytics() : null);
