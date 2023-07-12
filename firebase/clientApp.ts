@@ -17,4 +17,3 @@ if (!getApps().length) {
 }
 
 export const auth = getAuth();
-export const analytics = isSupported().then(yes => yes ? getAnalytics() : null);
