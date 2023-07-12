@@ -9,32 +9,43 @@ import { useEffect } from "react";
 import { useRouter } from 'next/router';
 import { logEvent } from "firebase/analytics";
 
+const log = (url: string) => {
+  analytics
+    .then((a) => {
+      if (a !== null) {
+        logEvent(a, 'screen_view', {
+          firebase_screen: url,
+          firebase_screen_class: url,
+        });
+      }
+    })
+    .catch((error) => {
+      console.log('Failed to log event:', error);
+    });
+};
+
 const MyApp = ({ Component, pageProps }: AppProps) => {
 
-  const routers = useRouter();
+  const router = useRouter();
 
   useEffect(() => {
+    console.log(process.env.NODE_ENV)
     if (process.env.NODE_ENV === 'production') {
-      const log = (url:string) => {
-        analytics.then((a) => {
-          if (a != null) {
-            logEvent(a, 'screen_view', {
-              firebase_screen: url, 
-              firebase_screen_class: url
-            });
-          }
-        })
+      log(window.location.pathname);
+      console.log(window.location.pathname);
+      console.log('goes here')
+
+      const handleRouteChange = (url:string) => {
+        log(url);
       };
 
-      routers.events.on('routeChangeComplete', logEvent);
-      log(window.location.pathname);
+      router.events.on('routeChangeComplete', handleRouteChange);
 
-      //Remvove Event Listener after un-mount
       return () => {
-        routers.events.off('routeChangeComplete', logEvent);
+        router.events.off('routeChangeComplete', handleRouteChange);
       };
     }
-  }, [routers.events]);
+  }, [router.events]);
 
   return (
     <AuthProvider>
