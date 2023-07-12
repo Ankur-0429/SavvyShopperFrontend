@@ -4,34 +4,38 @@ import AuthStateChanged from "@/layout/AuthStateChanged";
 import "../app/globals.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "../../firebase/clientApp";
-import { initGA, logPageView } from "@/service/ga";
+import {analytics} from "../../firebase/clientApp";
 import { useEffect } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router';
+import { logEvent } from "firebase/analytics";
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
-  const router = useRouter();
+
+  const routers = useRouter();
 
   useEffect(() => {
-    initGA();
-    logPageView();
-  }, []);
+    if (process.env.NODE_ENV === 'production') {
+      const log = (url:string) => {
+        analytics.then((a) => {
+          if (a != null) {
+            logEvent(a, 'screen_view', {
+              firebase_screen: url, 
+              firebase_screen_class: url
+            });
+          }
+        })
+      };
 
-  useEffect(() => {
-    const handleRouteChange = (url:string) => {
-      logPageView();
-    };
+      routers.events.on('routeChangeComplete', logEvent);
+      log(window.location.pathname);
 
-    // Event listener for route changes
-    router.events.on('routeChangeComplete', handleRouteChange);
+      //Remvove Event Listener after un-mount
+      return () => {
+        routers.events.off('routeChangeComplete', logEvent);
+      };
+    }
+  }, [routers.events]);
 
-    // Cleanup the event listener on unmount
-    return () => {
-      router.events.off('routeChangeComplete', handleRouteChange);
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  
   return (
     <AuthProvider>
       <AuthStateChanged>
