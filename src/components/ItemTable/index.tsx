@@ -27,7 +27,7 @@ export default function App({ items }: { items: ItemType[] }) {
     { name: "title", uid: "title" },
     { name: "Original Price", uid: "priorPrice" },
     { name: "Awaited Price", uid: "awaitedPrice" },
-    { name: "Status", uid: "status" },
+    { name: "Transaction Progress", uid: "status" },
     { name: "ACTIONS", uid: "actions" },
   ];
 
