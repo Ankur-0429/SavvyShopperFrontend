@@ -1,0 +1,21 @@
+.price-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .carrot-icon {
+    margin-right: 5px;
+    font-size: 16px;
+  }
+  
+  .green-carrot {
+    color: green;
+  }
+  
+  .red-carrot {
+    color: red;
+  }
+  
+  .price-value {
+    font-weight: bold;
+  }

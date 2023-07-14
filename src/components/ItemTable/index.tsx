@@ -1,10 +1,11 @@
-import { Table, Row, Col, Tooltip, Image, Text } from "@nextui-org/react";
+import { Table, Row, Col, Tooltip, Image, Text, Spacer } from "@nextui-org/react";
 import { StyledBadge } from "./StyledBadge";
 import { IconButton } from "./IconButton";
 import { EyeIcon } from "./EyeIcon";
 import { EditIcon } from "./EditIcon";
 import { DeleteIcon } from "./DeleteIcon";
 import { Typography } from "@mui/joy";
+import PriceWithIndicator from "./PriceWithIndicator";
 
 export interface ItemType {
   desired_price: number;
@@ -25,10 +26,10 @@ export interface ItemType {
 export default function App({ items }: { items: ItemType[] }) {
   const columns = [
     { name: "Item", uid: "item" },
-    { name: "title", uid: "title" },
-    { name: "Original Price", uid: "priorPrice" },
+    { name: "", uid: "title" },
+    { name: "Current Price", uid: "priorPrice" },
     { name: "Awaited Price", uid: "awaitedPrice" },
-    { name: "Transaction Progress", uid: "status" },
+    { name: "Price Change (Daily)", uid: "status" },
     { name: "ACTIONS", uid: "actions" },
   ];
 
@@ -50,15 +51,17 @@ export default function App({ items }: { items: ItemType[] }) {
       case "title":
         return (
           <Typography>
-            {item.item_name}
+            {(item.nickname || item.item_name).length > 40
+              ? (item.nickname || item.item_name).slice(0, 40) + "..."
+              : item.nickname || item.item_name}
           </Typography>
-        )
+        );
       case "priorPrice":
         return (
           <Col>
             <Row>
               <Text b size={14} css={{ tt: "capitalize" }}>
-                {item.price_data[0]}
+                {item.price_data[item.price_data.length - 1]}
               </Text>
             </Row>
           </Col>
@@ -75,6 +78,11 @@ export default function App({ items }: { items: ItemType[] }) {
           </Col>
         );
       case "status":
+        if (item.status == 'processing') {
+          return (
+            <PriceWithIndicator price={(item.price_data[item.price_data.length - 1] - item.price_data[item.price_data.length - 2]) || 0} isIncreased={item.price_data[item.price_data.length - 1] > item.price_data[item.price_data.length - 2]} />
+          )
+        }
         return <StyledBadge type={item.status}>{cellValue}</StyledBadge>;
 
       case "actions":
@@ -87,6 +95,7 @@ export default function App({ items }: { items: ItemType[] }) {
                 </IconButton>
               </Tooltip>
             </Col>
+            <Spacer x={0.5} />
             <Col css={{ d: "flex" }}>
               <Tooltip content="Edit item">
                 <IconButton>
@@ -94,6 +103,7 @@ export default function App({ items }: { items: ItemType[] }) {
                 </IconButton>
               </Tooltip>
             </Col>
+            <Spacer x={0.5} />
             <Col css={{ d: "flex" }}>
               <Tooltip
                 content="Delete item"
