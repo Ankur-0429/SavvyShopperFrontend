@@ -135,7 +135,8 @@ export default function App({ items }: { items: ItemType[] }) {
             <Table.Column
               key={column.uid}
               hideHeader={column.uid === "actions"}
-              align={column.uid === "actions" ? "center" : "start"}>
+              align={column.uid === "actions" ? "center" : "start"}
+              css={{whiteSpace: 'nowrap', paddingRight: 12}}>
               {column.name}
             </Table.Column>
           )}
