@@ -19,6 +19,7 @@ export interface ItemType {
   id: string;
   url: string;
   status: "processing" | "stopped" | "completed";
+  nickname: string;
 }
 
 export default function App({ items }: { items: ItemType[] }) {

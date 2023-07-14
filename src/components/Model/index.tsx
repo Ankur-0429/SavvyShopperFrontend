@@ -22,7 +22,13 @@ interface URLSuccessResponse {
   };
 }
 
-export default function Model({items, setItems}: {items: ItemType[],setItems: Dispatch<SetStateAction<ItemType[]>>}) {
+export default function Model({
+  items,
+  setItems,
+}: {
+  items: ItemType[];
+  setItems: Dispatch<SetStateAction<ItemType[]>>;
+}) {
   const [visible, setVisible] = React.useState(false);
   const [url, setUrl] = React.useState("");
   const [urlErr, setUrlErr] = useState("");
@@ -32,6 +38,7 @@ export default function Model({items, setItems}: {items: ItemType[],setItems: Di
   const [desiredPrice, setDesiredPrice] = useState(0);
   const [retailerName, setRetailerName] = useState("");
   const [retailerIcon, setRetailerIcon] = useState("");
+  const [nickname, setNickname] = useState("");
   const handler = () => setVisible(true);
   const closeHandler = () => {
     setVisible(false);
@@ -48,6 +55,7 @@ export default function Model({items, setItems}: {items: ItemType[],setItems: Di
     desired_price: desiredPrice,
     start_date: new Date().toISOString(),
     item_name: name,
+    nickname: nickname
   };
 
   const reset = () => {
@@ -59,6 +67,7 @@ export default function Model({items, setItems}: {items: ItemType[],setItems: Di
     setDesiredPrice(0);
     setRetailerIcon("");
     setRetailerName("");
+    setNickname("");
   };
 
   const executeUrlGetRequest = async () => {
@@ -85,20 +94,21 @@ export default function Model({items, setItems}: {items: ItemType[],setItems: Di
     fetchClient
       .post("/schedule", newTaskData)
       .then(() => {
-        const itemData:ItemType = {
+        const itemData: ItemType = {
           desired_price: desiredPrice,
           item_name: name,
           price_data: [price],
           retailer: {
             icon: retailerIcon,
-            name: retailerName
+            name: retailerName,
           },
           start_date: new Date().toISOString(),
-          uid: auth?.user?.uid || '0',
+          uid: auth?.user?.uid || "0",
           url: url,
-          status: 'processing',
-          id: Date.now().toString()
-        }
+          status: "processing",
+          id: Date.now().toString(),
+          nickname: nickname,
+        };
         const newData = [...items, itemData];
         console.log(newData);
         setItems(newData);
@@ -113,7 +123,7 @@ export default function Model({items, setItems}: {items: ItemType[],setItems: Di
           draggable: true,
           progress: undefined,
           theme: "light",
-          });
+        });
       });
   };
 
@@ -139,7 +149,10 @@ export default function Model({items, setItems}: {items: ItemType[],setItems: Di
           blur
           aria-labelledby="modal-title"
           open={visible}
-          onClose={closeHandler}>
+          onClose={() => {
+            reset();
+            closeHandler();
+          }}>
           <Modal.Header>
             <Typography level="h5">Track new item</Typography>
           </Modal.Header>
@@ -156,7 +169,6 @@ export default function Model({items, setItems}: {items: ItemType[],setItems: Di
                 value={url}
                 color={urlErr !== "" ? "error" : "primary"}
                 onChange={(event) => {
-                  setUrlErr("");
                   reset();
                   setIsLoading(event.target.value != "");
                   setUrl(event.target.value);
@@ -191,6 +203,8 @@ export default function Model({items, setItems}: {items: ItemType[],setItems: Di
                   <Input
                     labelLeft={"$"}
                     type="number"
+                    required
+                    helperText="Required"
                     placeholder="0"
                     label="Desired Price"
                     className="ml-1"
@@ -206,9 +220,20 @@ export default function Model({items, setItems}: {items: ItemType[],setItems: Di
                     }}
                   />
                 </div>
+                <Spacer y={0.5} />
+                <Input
+              width="100%"
+              label="Name"
+              value={nickname}
+              onChange={(event) => {
+                setNickname(event.target.value);
+              }}
+            />
               </div>
             </Typography>
             <Spacer y={0.5} />
+
+           
           </Modal.Body>
           <Modal.Footer>
             <Button auto flat color="error" onPress={closeHandler}>
