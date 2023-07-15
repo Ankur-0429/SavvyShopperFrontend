@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { Input, Button, Spacer } from "@nextui-org/react";
 import { Password } from "@/components/Password";
 import { Mail } from "@/components/Mail";
+import useList from "@/hook/AsyncList";
 
 function App({ auth }: { auth: AuthType }) {
   const [email, setEmail] = useState("");
@@ -22,7 +23,6 @@ function App({ auth }: { auth: AuthType }) {
 
   const checkError = () => {
     const err = auth?.error;
-    console.log(err);
 
     if (err === undefined) return;
 
@@ -51,6 +51,8 @@ function App({ auth }: { auth: AuthType }) {
     checkError();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth?.error]);
+
+  const list = useList();
 
   return (
     <CssVarsProvider>
@@ -117,7 +119,9 @@ function App({ auth }: { auth: AuthType }) {
         <button
           className="login-with-google-btn"
           onClick={async () => {
-            auth?.loginWithGoogle();
+            auth?.loginWithGoogle().then(() => {
+              list.reload();
+            });
           }}>
           Sign up with Google
         </button>
@@ -137,6 +141,7 @@ function App({ auth }: { auth: AuthType }) {
               .then(() => {
                 checkError();
               });
+            list.reload();
           }}
           style={{ marginTop: 20 }}>
           Continue

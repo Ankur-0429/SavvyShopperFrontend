@@ -61,6 +61,8 @@ function App({auth}: {auth: AuthType}) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth?.error])
 
+  const list = useList();
+
   return (
     <CssVarsProvider>
       <Sheet
@@ -125,7 +127,9 @@ function App({auth}: {auth: AuthType}) {
           or
         </Divider>
 
-        <button className="login-with-google-btn" onClick={async ()=>{auth?.loginWithGoogle();}}>
+        <button className="login-with-google-btn" onClick={async ()=>{auth?.loginWithGoogle().then(() => {
+          list.reload();
+        });}}>
           Sign in with Google
         </button>
 
@@ -139,6 +143,7 @@ function App({auth}: {auth: AuthType}) {
             return;
           }
           await auth?.loginWithEmailAndPassword(email, password).then(() => {checkError()})
+          list.reload();
         }} style={{marginTop: 20}}>
           Continue
         </Button>
