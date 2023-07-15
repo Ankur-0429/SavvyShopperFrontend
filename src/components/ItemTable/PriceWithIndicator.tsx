@@ -1,7 +1,7 @@
 import React from 'react';
 import "../../../styles/priceWithIndicator.css"
 
-const PriceWithIndicator = ({ price, isIncreased }: {price: number, isIncreased: boolean}) => {
+const PriceWithIndicator = ({ price, isIncreased }: {price: string, isIncreased: boolean}) => {
   return (
     <div className="price-container">
       {isIncreased ? (
