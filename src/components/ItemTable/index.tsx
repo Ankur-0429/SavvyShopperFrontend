@@ -6,8 +6,6 @@ import {
   Image,
   Text,
   Spacer,
-  useCollator,
-  useAsyncList,
 } from "@nextui-org/react";
 import { StyledBadge } from "./StyledBadge";
 import { IconButton } from "./IconButton";
@@ -17,6 +15,7 @@ import { DeleteIcon } from "./DeleteIcon";
 import { Typography } from "@mui/joy";
 import PriceWithIndicator from "./PriceWithIndicator";
 import useList from "@/hook/AsyncList";
+import Link from "next/link";
 
 export interface ItemType {
   desired_price: number;
@@ -114,9 +113,9 @@ export default function App() {
           <Row justify="center" align="center">
             <Col css={{ d: "flex" }}>
               <Tooltip content="Details">
-                <IconButton onClick={() => window.open(item.url, "_blank")}>
-                  <EyeIcon size={20} fill="#979797" />
-                </IconButton>
+              <Link href={`/Dashboard/${item.id}`}>
+                <EyeIcon size={20} fill="#979797" />
+              </Link>
               </Tooltip>
             </Col>
             <Spacer x={0.5} />
