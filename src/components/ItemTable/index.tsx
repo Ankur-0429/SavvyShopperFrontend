@@ -66,7 +66,7 @@ export default function App() {
           <Col>
             <Row>
               <Text b size={14} css={{ tt: "capitalize" }}>
-                {item.price_data[item.price_data.length - 1]}
+                {item.price_data[item.price_data.length - 1].toFixed(2)}
               </Text>
             </Row>
           </Col>
@@ -77,7 +77,7 @@ export default function App() {
           <Col>
             <Row>
               <Text b size={14} css={{ tt: "capitalize" }}>
-                {item.desired_price}
+                {item.desired_price.toFixed(2)}
               </Text>
             </Row>
           </Col>
