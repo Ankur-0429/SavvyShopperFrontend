@@ -1,4 +1,14 @@
-import { Table, Row, Col, Tooltip, Image, Text, Spacer } from "@nextui-org/react";
+import {
+  Table,
+  Row,
+  Col,
+  Tooltip,
+  Image,
+  Text,
+  Spacer,
+  useCollator,
+  useAsyncList,
+} from "@nextui-org/react";
 import { StyledBadge } from "./StyledBadge";
 import { IconButton } from "./IconButton";
 import { EyeIcon } from "./EyeIcon";
@@ -6,6 +16,7 @@ import { EditIcon } from "./EditIcon";
 import { DeleteIcon } from "./DeleteIcon";
 import { Typography } from "@mui/joy";
 import PriceWithIndicator from "./PriceWithIndicator";
+import fetchClient from "@/service/FetchClient";
 
 export interface ItemType {
   desired_price: number;
@@ -23,15 +34,70 @@ export interface ItemType {
   nickname: string;
 }
 
-export default function App({ items }: { items: ItemType[] }) {
+export default function App() {
   const columns = [
     { name: "Item", uid: "item" },
-    { name: "", uid: "title" },
-    { name: "Current Price", uid: "priorPrice" },
-    { name: "Awaited Price", uid: "awaitedPrice" },
+    { name: "Name", uid: "item_name" },
+    { name: "Current Price", uid: "currentPrice" },
+    { name: "Desired Price", uid: "desired_price" },
     { name: "Price Change (Daily)", uid: "status" },
     { name: "ACTIONS", uid: "actions" },
   ];
+
+  const collator = useCollator({ numeric: true, caseFirst: "upper", usage: "sort" });
+  async function load({ signal }: any) {
+    const res = await fetchClient("/findAllItemsOfUser", {
+      signal,
+    });
+
+    if (res.status == 200) {
+      return {
+        items: res.data,
+      };
+    }
+    return { items: [] };
+  }
+  async function sort({ items, sortDescriptor }: any) {
+    return {
+      items: items.sort((a: any, b: any) => {
+        let first = a[sortDescriptor.column];
+        let second = b[sortDescriptor.column];
+        
+        if (sortDescriptor.column == 'item_name') {
+          first = a['nickname'] || a[sortDescriptor.column];
+          second = b['nickname'] || b[sortDescriptor.column];
+        }
+
+        if (sortDescriptor.column == 'currentPrice') {
+          let len1 = a['price_data'].length;
+          let len2 = b['price_data'].length;
+          first = a['price_data'][len1-1];
+          second = b['price_data'][len2-1];
+        }
+
+        if (sortDescriptor.column == 'status') {
+          let len1 = a['price_data'].length;
+          let len2 = b['price_data'].length;
+          first = Math.abs((a['price_data'][len1-1] - a['price_data'][len1-2]) || 0);
+          second = Math.abs((b['price_data'][len2-1] - b['price_data'][len2-2]) || 0);
+
+          if (a['status'] !== 'processing') {
+            first = 1;
+          }
+          if (b['status'] !== 'processing') {
+            second = 1;
+          }
+        }
+
+        let cmp = collator.compare(first, second);
+        if (sortDescriptor.direction === "descending") {
+          cmp *= -1;
+        }
+        return cmp;
+      }),
+    };
+  }
+  const list = useAsyncList({ load, sort });
 
   const renderCell = (item: ItemType, columnKey: React.Key) => {
     // @ts-ignore
@@ -48,7 +114,7 @@ export default function App({ items }: { items: ItemType[] }) {
             className="rounded-full shrink-0"
           />
         );
-      case "title":
+      case "item_name":
         return (
           <Typography>
             {(item.nickname || item.item_name).length > 40
@@ -56,7 +122,7 @@ export default function App({ items }: { items: ItemType[] }) {
               : item.nickname || item.item_name}
           </Typography>
         );
-      case "priorPrice":
+      case "currentPrice":
         return (
           <Col>
             <Row>
@@ -67,7 +133,7 @@ export default function App({ items }: { items: ItemType[] }) {
           </Col>
         );
 
-      case "awaitedPrice":
+      case "desired_price":
         return (
           <Col>
             <Row>
@@ -78,10 +144,19 @@ export default function App({ items }: { items: ItemType[] }) {
           </Col>
         );
       case "status":
-        if (item.status == 'processing') {
+        if (item.status == "processing") {
           return (
-            <PriceWithIndicator price={(item.price_data[item.price_data.length - 1] - item.price_data[item.price_data.length - 2]) || 0} isIncreased={item.price_data[item.price_data.length - 1] > item.price_data[item.price_data.length - 2]} />
-          )
+            <PriceWithIndicator
+              price={
+                Math.abs(item.price_data[item.price_data.length - 1] -
+                  item.price_data[item.price_data.length - 2]) || 0
+              }
+              isIncreased={
+                item.price_data[item.price_data.length - 1] >
+                item.price_data[item.price_data.length - 2]
+              }
+            />
+          );
         }
         return <StyledBadge type={item.status}>{cellValue}</StyledBadge>;
 
@@ -125,6 +200,8 @@ export default function App({ items }: { items: ItemType[] }) {
       <Table
         className="z-0"
         aria-label="Example table with custom cells"
+        sortDescriptor={list.sortDescriptor}
+        onSortChange={list.sort}
         css={{
           height: "auto",
           minWidth: "100%",
@@ -133,15 +210,16 @@ export default function App({ items }: { items: ItemType[] }) {
         <Table.Header columns={columns}>
           {(column) => (
             <Table.Column
+              allowsSorting={column.uid != "item" && column.uid != "actions"}
               key={column.uid}
-              hideHeader={column.uid === "actions"}
+              hideHeader={column.uid === "actions" || column.uid == "item"}
               align={column.uid === "actions" ? "center" : "start"}
-              css={{whiteSpace: 'nowrap', paddingRight: 12}}>
+              css={{ whiteSpace: "nowrap", paddingRight: 30 }}>
               {column.name}
             </Table.Column>
           )}
         </Table.Header>
-        <Table.Body items={items}>
+        <Table.Body items={list.items as ItemType[]}>
           {(item: ItemType) => (
             <Table.Row>
               {(columnKey) => (
