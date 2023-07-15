@@ -17,7 +17,6 @@ export const AuthService = {
     return signInWithPopup(auth, provider)
       .then((user) => {
         const isNewUser = getAdditionalUserInfo(user)?.isNewUser;
-
         if (isNewUser) {
           fetchClient('/sendWelcomeEmailToUser');
         }

@@ -4,9 +4,7 @@ import { auth } from '../../firebase/clientApp';
 const fetchClient = (() => {
     const getAuthToken = async () => {
         try {
-            const token = await auth.currentUser?.getIdToken();
-            console.log(token);
-            return token;
+            return await auth.currentUser?.getIdToken();
         } catch(err) {
             console.log("getAuthToken", err);
         };
