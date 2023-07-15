@@ -16,7 +16,7 @@ import { EditIcon } from "./EditIcon";
 import { DeleteIcon } from "./DeleteIcon";
 import { Typography } from "@mui/joy";
 import PriceWithIndicator from "./PriceWithIndicator";
-import fetchClient from "@/service/FetchClient";
+import useList from "@/hook/AsyncList";
 
 export interface ItemType {
   desired_price: number;
@@ -44,60 +44,7 @@ export default function App() {
     { name: "ACTIONS", uid: "actions" },
   ];
 
-  const collator = useCollator({ numeric: true, caseFirst: "upper", usage: "sort" });
-  async function load({ signal }: any) {
-    const res = await fetchClient("/findAllItemsOfUser", {
-      signal,
-    });
-
-    if (res.status == 200) {
-      return {
-        items: res.data,
-      };
-    }
-    return { items: [] };
-  }
-  async function sort({ items, sortDescriptor }: any) {
-    return {
-      items: items.sort((a: any, b: any) => {
-        let first = a[sortDescriptor.column];
-        let second = b[sortDescriptor.column];
-        
-        if (sortDescriptor.column == 'item_name') {
-          first = a['nickname'] || a[sortDescriptor.column];
-          second = b['nickname'] || b[sortDescriptor.column];
-        }
-
-        if (sortDescriptor.column == 'currentPrice') {
-          let len1 = a['price_data'].length;
-          let len2 = b['price_data'].length;
-          first = a['price_data'][len1-1];
-          second = b['price_data'][len2-1];
-        }
-
-        if (sortDescriptor.column == 'status') {
-          let len1 = a['price_data'].length;
-          let len2 = b['price_data'].length;
-          first = Math.abs((a['price_data'][len1-1] - a['price_data'][len1-2]) || 0);
-          second = Math.abs((b['price_data'][len2-1] - b['price_data'][len2-2]) || 0);
-
-          if (a['status'] !== 'processing') {
-            first = 1;
-          }
-          if (b['status'] !== 'processing') {
-            second = 1;
-          }
-        }
-
-        let cmp = collator.compare(first, second);
-        if (sortDescriptor.direction === "descending") {
-          cmp *= -1;
-        }
-        return cmp;
-      }),
-    };
-  }
-  const list = useAsyncList({ load, sort });
+  const list = useList();
 
   const renderCell = (item: ItemType, columnKey: React.Key) => {
     // @ts-ignore
@@ -148,8 +95,10 @@ export default function App() {
           return (
             <PriceWithIndicator
               price={
-                Math.abs(item.price_data[item.price_data.length - 1] -
-                  item.price_data[item.price_data.length - 2]) || 0
+                Math.abs(
+                  item.price_data[item.price_data.length - 1] -
+                    item.price_data[item.price_data.length - 2]
+                ) || 0
               }
               isIncreased={
                 item.price_data[item.price_data.length - 1] >
@@ -195,46 +144,49 @@ export default function App() {
         return cellValue;
     }
   };
-  return (
-    <Typography>
-      <Table
-        className="z-0"
-        aria-label="Example table with custom cells"
-        sortDescriptor={list.sortDescriptor}
-        onSortChange={list.sort}
-        css={{
-          height: "auto",
-          minWidth: "100%",
-        }}
-        selectionMode="none">
-        <Table.Header columns={columns}>
-          {(column) => (
-            <Table.Column
-              allowsSorting={column.uid != "item" && column.uid != "actions"}
-              key={column.uid}
-              hideHeader={column.uid === "actions" || column.uid == "item"}
-              align={column.uid === "actions" ? "center" : "start"}
-              css={{ whiteSpace: "nowrap", paddingRight: 30 }}>
-              {column.name}
-            </Table.Column>
-          )}
-        </Table.Header>
-        <Table.Body items={list.items as ItemType[]}>
-          {(item: ItemType) => (
-            <Table.Row>
-              {(columnKey) => (
-                <Table.Cell>{renderCell(item, columnKey)}</Table.Cell>
-              )}
-            </Table.Row>
-          )}
-        </Table.Body>
-        <Table.Pagination
-          noMargin
-          align="center"
-          rowsPerPage={10}
-          onPageChange={(page) => console.log({ page })}
-        />
-      </Table>
-    </Typography>
-  );
+  if (list !== undefined) {
+    return (
+      <Typography>
+        <Table
+          className="z-0"
+          aria-label="Example table with custom cells"
+          sortDescriptor={list.sortDescriptor}
+          onSortChange={list.sort}
+          css={{
+            height: "auto",
+            minWidth: "100%",
+          }}
+          selectionMode="none">
+          <Table.Header columns={columns}>
+            {(column) => (
+              <Table.Column
+                allowsSorting={column.uid != "item" && column.uid != "actions"}
+                key={column.uid}
+                hideHeader={column.uid === "actions" || column.uid == "item"}
+                align={column.uid === "actions" ? "center" : "start"}
+                css={{ whiteSpace: "nowrap", paddingRight: 30 }}>
+                {column.name}
+              </Table.Column>
+            )}
+          </Table.Header>
+          <Table.Body items={list.items as ItemType[]}>
+            {(item: ItemType) => (
+              <Table.Row>
+                {(columnKey) => (
+                  <Table.Cell>{renderCell(item, columnKey)}</Table.Cell>
+                )}
+              </Table.Row>
+            )}
+          </Table.Body>
+          <Table.Pagination
+            noMargin
+            align="center"
+            rowsPerPage={10}
+            onPageChange={(page) => console.log({ page })}
+          />
+        </Table>
+      </Typography>
+    );
+  }
+  return null;
 }

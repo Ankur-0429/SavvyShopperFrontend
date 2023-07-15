@@ -12,6 +12,7 @@ import fetchClient from "@/service/FetchClient";
 import { ItemType } from "../ItemTable";
 import useAuth from "@/hook/Auth";
 import { toast } from "react-toastify";
+import useList from "@/hook/AsyncList";
 
 interface URLSuccessResponse {
   name: string;
@@ -22,13 +23,7 @@ interface URLSuccessResponse {
   };
 }
 
-export default function Model({
-  items,
-  setItems,
-}: {
-  items: ItemType[];
-  setItems: Dispatch<SetStateAction<ItemType[]>>;
-}) {
+export default function Model() {
   const [visible, setVisible] = React.useState(false);
   const [url, setUrl] = React.useState("");
   const [urlErr, setUrlErr] = useState("");
@@ -44,6 +39,7 @@ export default function Model({
     setVisible(false);
   };
   const auth = useAuth();
+  const list = useList();
 
   const newTaskData = {
     url: url,
@@ -109,9 +105,7 @@ export default function Model({
           id: Date.now().toString(),
           nickname: nickname,
         };
-        const newData = [...items, itemData];
-        console.log(newData);
-        setItems(newData);
+        list.append(itemData)
       })
       .catch(({ response }) => {
         toast.warn(response.data.error, {

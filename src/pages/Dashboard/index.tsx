@@ -17,6 +17,9 @@ function App({ auth }: { auth: AuthType }) {
     <div>
       <Navbar />
       <div className="max-w-[1240px] mx-auto mt-5">
+        <div className="flex justify-end mb-5">
+          <Model />
+        </div>
         <ItemTable />
       </div>
     </div>
