@@ -10,13 +10,13 @@ import {
 import { StyledBadge } from "./StyledBadge";
 import { IconButton } from "./IconButton";
 import { EyeIcon } from "./EyeIcon";
-import { EditIcon } from "./EditIcon";
 import { DeleteIcon } from "./DeleteIcon";
 import { Typography } from "@mui/joy";
 import PriceWithIndicator from "./PriceWithIndicator";
 import useList from "@/hook/AsyncList";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import EditModel from "../EditModel";
 
 export interface ItemType {
   desired_price: number;
@@ -123,9 +123,7 @@ export default function App() {
             <Spacer x={0.5} />
             <Col css={{ d: "flex" }}>
               <Tooltip content="Edit item">
-                <IconButton>
-                  <EditIcon size={20} fill="#979797" />
-                </IconButton>
+                <EditModel item={item} />
               </Tooltip>
             </Col>
             <Spacer x={0.5} />
@@ -149,10 +147,6 @@ export default function App() {
     return (
       <Typography>
         <Table
-          selectionMode="single"
-          onSelectionChange={(keys:any) => {
-            router.push(`/Dashboard/${keys['currentKey']}`)
-          }}
           className="z-0"
           aria-label="Example table with custom cells"
           sortDescriptor={list.sortDescriptor}
