@@ -17,6 +17,8 @@ import useList from "@/hook/AsyncList";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import EditModel from "../EditModel";
+import DeletePopover from "../DeleteModel";
+import DeleteModel from "../DeleteModel";
 
 export interface ItemType {
   desired_price: number;
@@ -130,11 +132,8 @@ export default function App() {
             <Col css={{ d: "flex" }}>
               <Tooltip
                 content="Delete item"
-                color="error"
-                onClick={() => console.log("Delete item", item.id)}>
-                <IconButton>
-                  <DeleteIcon size={20} fill="#FF0080" />
-                </IconButton>
+                color="error">
+                  <DeleteModel id={item.id} />
               </Tooltip>
             </Col>
           </Row>
