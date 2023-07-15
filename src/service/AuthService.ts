@@ -1,12 +1,14 @@
 import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
+  getAdditionalUserInfo,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
 } from "firebase/auth";
 import { auth } from "../../firebase/clientApp";
 import "firebase/auth";
+import fetchClient from "./FetchClient";
 
 export const AuthService = {
   loginWithGoogle: async () => {
@@ -14,6 +16,12 @@ export const AuthService = {
 
     return signInWithPopup(auth, provider)
       .then((user) => {
+        const isNewUser = getAdditionalUserInfo(user)?.isNewUser;
+
+        if (isNewUser) {
+          fetchClient('/sendWelcomeEmailToUser');
+        }
+
         return {
           user: user.user,
           error: undefined,
@@ -34,6 +42,7 @@ export const AuthService = {
   registerUserFromEmailAndPassword: (email: string, password: string) => {
     return createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
+        fetchClient('/sendWelcomeEmailToUser');
         return {
           user: userCredential.user,
           error: undefined,
