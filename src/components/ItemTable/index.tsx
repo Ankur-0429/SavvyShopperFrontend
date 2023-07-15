@@ -1,23 +1,12 @@
-import {
-  Table,
-  Row,
-  Col,
-  Tooltip,
-  Image,
-  Text,
-  Spacer,
-} from "@nextui-org/react";
+import { Table, Row, Col, Image, Text, Spacer } from "@nextui-org/react";
 import { StyledBadge } from "./StyledBadge";
-import { IconButton } from "./IconButton";
 import { EyeIcon } from "./EyeIcon";
-import { DeleteIcon } from "./DeleteIcon";
 import { Typography } from "@mui/joy";
 import PriceWithIndicator from "./PriceWithIndicator";
 import useList from "@/hook/AsyncList";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import EditModel from "../EditModel";
-import DeletePopover from "../DeleteModel";
 import DeleteModel from "../DeleteModel";
 
 export interface ItemType {
@@ -116,25 +105,17 @@ export default function App() {
         return (
           <Row justify="center" align="center">
             <Col css={{ d: "flex" }}>
-              <Tooltip content="Details">
-                <Link href={`/Dashboard/${item.id}`}>
-                  <EyeIcon size={20} fill="#979797" />
-                </Link>
-              </Tooltip>
+              <Link href={`/Dashboard/${item.id}`}>
+                <EyeIcon size={20} fill="#979797" />
+              </Link>
             </Col>
             <Spacer x={0.5} />
             <Col css={{ d: "flex" }}>
-              <Tooltip content="Edit item">
-                <EditModel item={item} />
-              </Tooltip>
+              <EditModel item={item} />
             </Col>
             <Spacer x={0.5} />
             <Col css={{ d: "flex" }}>
-              <Tooltip
-                content="Delete item"
-                color="error">
-                  <DeleteModel id={item.id} />
-              </Tooltip>
+              <DeleteModel id={item.id} />
             </Col>
           </Row>
         );
