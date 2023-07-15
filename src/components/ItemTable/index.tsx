@@ -16,6 +16,7 @@ import { Typography } from "@mui/joy";
 import PriceWithIndicator from "./PriceWithIndicator";
 import useList from "@/hook/AsyncList";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export interface ItemType {
   desired_price: number;
@@ -44,6 +45,7 @@ export default function App() {
   ];
 
   const list = useList();
+  const router = useRouter();
 
   const renderCell = (item: ItemType, columnKey: React.Key) => {
     // @ts-ignore
@@ -113,9 +115,9 @@ export default function App() {
           <Row justify="center" align="center">
             <Col css={{ d: "flex" }}>
               <Tooltip content="Details">
-              <Link href={`/Dashboard/${item.id}`}>
-                <EyeIcon size={20} fill="#979797" />
-              </Link>
+                <Link href={`/Dashboard/${item.id}`}>
+                  <EyeIcon size={20} fill="#979797" />
+                </Link>
               </Tooltip>
             </Col>
             <Spacer x={0.5} />
@@ -147,6 +149,10 @@ export default function App() {
     return (
       <Typography>
         <Table
+          selectionMode="single"
+          onSelectionChange={(keys:any) => {
+            router.push(`/Dashboard/${keys['currentKey']}`)
+          }}
           className="z-0"
           aria-label="Example table with custom cells"
           sortDescriptor={list.sortDescriptor}
@@ -154,8 +160,7 @@ export default function App() {
           css={{
             height: "auto",
             minWidth: "100%",
-          }}
-          selectionMode="none">
+          }}>
           <Table.Header columns={columns}>
             {(column) => (
               <Table.Column
@@ -168,7 +173,10 @@ export default function App() {
               </Table.Column>
             )}
           </Table.Header>
-          <Table.Body items={list.items as ItemType[]}>
+          <Table.Body
+            items={list.items as ItemType[]}
+            loadingState={list.loadingState}
+            onLoadMore={list.loadMore}>
             {(item: ItemType) => (
               <Table.Row>
                 {(columnKey) => (
