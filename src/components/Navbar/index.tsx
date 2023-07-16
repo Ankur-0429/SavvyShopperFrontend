@@ -23,7 +23,7 @@ const App = () => {
   return (
     <Navbar isBordered variant="sticky" className="z-50">
       <Navbar.Brand>
-        <Image src={Logo} alt="Company Logo" width={50} height={60} />
+        <Image src={Logo} alt="Company Logo" width={30} height={36} className="mr-3" />
         <Text b color="inherit" hideIn="xs">
           <Typography>SaavyShopper</Typography>
         </Text>

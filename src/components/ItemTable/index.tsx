@@ -90,7 +90,7 @@ export default function App() {
                 Math.abs(
                   item.price_data[item.price_data.length - 1] -
                     item.price_data[item.price_data.length - 2]
-                ) || 0
+                ).toFixed(2) || "0"
               }
               isIncreased={
                 item.price_data[item.price_data.length - 1] >
