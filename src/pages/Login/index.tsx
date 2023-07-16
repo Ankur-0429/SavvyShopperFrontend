@@ -22,11 +22,6 @@ function App({auth}: {auth: AuthType}) {
   const [password, setPassword] = useState('');
   const [passwordErr, setPasswordErr] = useState('');
 
-  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPasswordErr('');
-    setPassword(event.target.value);
-  };
-
   const checkError = () => {
     const err = auth?.error;
 
@@ -119,8 +114,6 @@ function App({auth}: {auth: AuthType}) {
               contentLeft={<Password fill="currentColor" />}
             />
         </Typography>
-
-        
 
         <Spacer y={0.5} />
 

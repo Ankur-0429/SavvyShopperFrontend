@@ -36,7 +36,6 @@ export default function App() {
   ];
 
   const list = useList();
-  const router = useRouter();
 
   const renderCell = (item: ItemType, columnKey: React.Key) => {
     // @ts-ignore
@@ -87,10 +86,10 @@ export default function App() {
           return (
             <PriceWithIndicator
               price={
-                Math.abs(
+                (Math.abs(
                   item.price_data[item.price_data.length - 1] -
                     item.price_data[item.price_data.length - 2]
-                ).toFixed(2) || "0"
+                ) || 0).toFixed(2)
               }
               isIncreased={
                 item.price_data[item.price_data.length - 1] >
