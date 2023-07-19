@@ -22,7 +22,6 @@ export const AsyncListProvider = (props: any) => {
 
     if (res.status == 200) {
       const items = Array.isArray(res.data) ? res.data : [];
-      console.log(res.data);
       return {
         items: items,
       };

@@ -6,9 +6,26 @@ import { withProtected } from "@/hook/Routes";
 import { AuthType } from "@/hook/Auth";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
+import Linechart from "@/components/LineChart";
+import fetchClient from "@/service/FetchClient";
+import { ItemType } from "@/components/ItemTable";
 
 function ItemDetails({ auth }: { auth: AuthType }) {
   const router = useRouter();
+  const [itemData, setItemData] = React.useState(null as null | ItemType);
+
+  React.useEffect(() => {
+    fetchClient.get<ItemType>('/findSingleItemOfUser', {
+      params: {
+        itemid: router.query.id,
+      },
+    }).then((response) => {
+      setItemData(response.data);
+    }).catch((err) => {
+      console.log(err);
+    })
+  }, [router.query.id])
+
   return (
     <div>
       <Navbar />
@@ -20,6 +37,10 @@ function ItemDetails({ auth }: { auth: AuthType }) {
           <span className="mx-2">{">"}</span>
           <Typography>Item Details</Typography>
         </div>
+
+        {itemData &&
+          <Linechart start_date={itemData.start_date} prices={itemData.price_data} />
+        }
         
 
       </div>
