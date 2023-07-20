@@ -6,6 +6,7 @@ import Chart from "chart.js/auto";
 interface LineChartType {
   prices: number[];
   start_date: string;
+  title: string;
 }
 
 const isoStringToDate = (isoString: string) => {
@@ -57,7 +58,7 @@ function isValidISOString(dateString: string): boolean {
   return new Date(dateString).toISOString() === dateString;
 }
 
-const Linechart = ({ prices, start_date }: LineChartType) => {
+const Linechart = ({ prices, start_date, title }: LineChartType) => {
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstance = useRef<Chart | null>(null);
 
@@ -74,7 +75,7 @@ const Linechart = ({ prices, start_date }: LineChartType) => {
         labels: labels,
         datasets: [
           {
-            label: "Price",
+            label: title,
             data: prices,
           },
         ],
