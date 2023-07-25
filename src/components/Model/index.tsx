@@ -90,22 +90,7 @@ export default function Model() {
     fetchClient
       .post("/schedule", newTaskData)
       .then(() => {
-        const itemData: ItemType = {
-          desired_price: desiredPrice,
-          item_name: name,
-          price_data: [price],
-          retailer: {
-            icon: retailerIcon,
-            name: retailerName,
-          },
-          start_date: new Date().toISOString(),
-          uid: auth?.user?.uid || "0",
-          url: url,
-          status: "processing",
-          id: Date.now().toString(),
-          nickname: nickname,
-        };
-        list.append(itemData)
+        list.reload()
       })
       .catch(({ response }) => {
         toast.warn(response.data.error, {
